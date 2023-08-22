@@ -58,4 +58,10 @@ class LoginTest extends TestCase
         $user = User::factory()->create(['email' => 'test@test.com', 'password' => bcrypt('123456789')]);
         $this->post(route('login.store'), ['email' => 'test@test.com', 'password' => '123456789'])->assertRedirectToRoute('home');
     }
+
+    /** @test */
+    public function login_form_produce_validation_errors(): void
+    {
+        $this->post(route('login.store'), ['email' => 'te@te.com', 'password' => ''])->assertSessionHasErrors(['email', 'password']);
+    }
 }
