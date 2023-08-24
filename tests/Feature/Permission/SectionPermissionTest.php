@@ -16,7 +16,8 @@ class SectionPermissionTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected MockInterface $spyUser;
+    protected User $spyUser;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -28,16 +29,14 @@ class SectionPermissionTest extends TestCase
             'edit section'
         ]);
         $this->spyUser = $this->spy(User::class);
+
+        $this->signIn($this->spyUser);
     }
 
     /** @test */
     public function user_is_asked_if_he_has_show_section_permission_on_route_sections_index(): void
     {
-
-        $authorizedUser = (new UserTestBuilder)->create($this->spyUser);
-
-        $this->signIn($authorizedUser)
-            ->get(route('sections.index'));
+        $this->get(route('sections.index'));
 
         $this->spyUser->shouldHaveReceived('hasPermissionTo')->with('show section')->once();
     }
@@ -45,12 +44,9 @@ class SectionPermissionTest extends TestCase
     /** @test */
     public function user_is_asked_if_he_has_create_section_permission_on_route_sections_store(): void
     {
-
-        $authorizedUser = (new UserTestBuilder)->create($this->spyUser);
-
         $section = Section::factory()->make();
-        $this->signIn($authorizedUser)
-            ->post(route('sections.store'), $section->toArray());
+
+        $this->post(route('sections.store'), $section->toArray());
 
         $this->spyUser->shouldHaveReceived('hasPermissionTo')->with('create section')->once();
     }
@@ -58,14 +54,12 @@ class SectionPermissionTest extends TestCase
     /** @test */
     public function user_is_asked_if_he_has_edit_section_permission_on_route_sections_update(): void
     {
-
-        $authorizedUser = (new UserTestBuilder)->create($this->spyUser);
-
         $section = Section::factory()->create();
 
-
-        $this->signIn($authorizedUser)
-            ->put(route('sections.update', ['section' => $section->id]), $section->toArray());
+        $this->put(route(
+            'sections.update',
+            ['section' => $section->id]
+        ), $section->toArray());
 
         $this->spyUser->shouldHaveReceived('hasPermissionTo')->with('edit section')->once();
     }
@@ -73,13 +67,9 @@ class SectionPermissionTest extends TestCase
     /** @test */
     public function user_is_asked_if_he_has_delete_section_permission_on_route_sections_delete(): void
     {
-
-        $authorizedUser = (new UserTestBuilder)->create($this->spyUser);
-
         $section = Section::factory()->create();
 
-        $this->signIn($authorizedUser)
-            ->delete(route('sections.destroy', ['section' => $section->id]));
+        $this->delete(route('sections.destroy', ['section' => $section->id]));
 
         $this->spyUser->shouldHaveReceived('hasPermissionTo')->with('delete section')->once();
     }

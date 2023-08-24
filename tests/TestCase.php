@@ -8,12 +8,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Arr;
 use Mockery;
+use Mockery\MockInterface;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    public function signIn(Authenticatable $user = null)
+    public function signIn(Authenticatable|MockInterface $user = null)
     {
         $authUser = $user ? $user : User::factory()->create();
         return $this->actingAs($authUser);
