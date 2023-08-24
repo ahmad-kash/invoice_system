@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreSectionRequest;
-use App\Http\Requests\UpdateSectionRequest;
+use App\Http\Requests\StoreUpdateSectionRequest;
 use App\Models\Section;
 use Illuminate\Http\Request;
 
@@ -33,7 +32,7 @@ class SectionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSectionRequest $request)
+    public function store(StoreUpdateSectionRequest $request)
     {
         Section::create($request->validated() + ['user_id' => auth()->id()]);
         return redirect()->route('sections.index');
@@ -58,7 +57,7 @@ class SectionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSectionRequest $request, Section $section)
+    public function update(StoreUpdateSectionRequest $request, Section $section)
     {
         $section->update($request->validated());
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateSectionRequest extends FormRequest
+class StoreUpdateSectionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class UpdateSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'max:999'],
-            'description' => ['nullable', 'string']
+            'name' => ['required', 'string', 'max:999'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

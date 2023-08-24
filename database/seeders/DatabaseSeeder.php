@@ -19,7 +19,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@test.com',
             'password' => bcrypt('123456789'),
         ]);
+
         \App\Models\Section::factory(10)->create();
+
+        \App\Models\Product::factory(10)->create();
+
         $this->call([PermissionRoleSeeder::class]);
         $admin->assignRole('admin');
     }
