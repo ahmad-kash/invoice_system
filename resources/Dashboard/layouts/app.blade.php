@@ -10,20 +10,25 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    {{-- <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css"> --}}
+    @vite('public/plugins/fontawesome-free/css/all.min.css')
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="dist/css/adminlte.min.css">
+    {{-- <link rel="stylesheet" href="dist/css/adminlte.min.css"> --}}
+    @vite('public/dist/css/adminlte.min.css')
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    {{-- <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css"> --}}
+    @vite('public/plugins/icheck-bootstrap/icheck-bootstrap.min.css')
     <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    {{-- <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css"> --}}
+    @vite('public/plugins/overlayScrollbars/css/OverlayScrollbars.min.css')
     <!-- Bootstrap 4 RTL -->
     <link rel="stylesheet" href="https://cdn.rtlcss.com/bootstrap/v4.2.1/css/bootstrap.min.css">
     <!-- Custom style for RTL -->
-    <link rel="stylesheet" href="dist/css/custom.css">
+    {{-- <link rel="stylesheet" href="dist/css/custom.css"> --}}
+    @vite('public/dist/css/custom.css')
     @stack('headerScripts')
     <!-- Scripts -->
 
@@ -49,19 +54,21 @@
         </div>
         {{ $slot ?? '' }}
     </main>
-    <script src="plugins/jquery/jquery.min.js"></script>
+    @vite('public/plugins/jquery/jquery.min.js')
     <!-- AdminLTE App -->
-    <script src="dist/js/adminlte.min.js"></script>
+    @vite('public/dist/js/adminlte.min.js')
 
-    <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+    @vite('public/plugins/jquery-ui/jquery-ui.min.js')
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    <script>
-        $.widget.bridge('uibutton', $.ui.button)
-    </script>
+    @vite('public/dist/js/resolveConflict.js')
     <!-- Bootstrap 4 rtl -->
-    <script src="https://cdn.rtlcss.com/bootstrap/v4.2.1/js/bootstrap.min.js"></script>
-    <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="https://cdn.rtlcss.com/bootstrap/v4.2.1/js/bootstrap.min.js" defer></script>
+
+    @vite('public/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @stack('bodyScripts')
+
 </body>
 
 </html>
