@@ -13,7 +13,7 @@ class DashboardTest extends TestCase
     /** @test */
     public function auth_user_can_see_dashboard(): void
     {
-        $this->signin()->get(route('home'))->assertSee('Dashboard')->assertOk();
+        $this->signIn()->get(route('home'))->assertSee('Dashboard')->assertOk();
     }
     /** @test */
     public function guest_can_not_see_dashboard(): void
