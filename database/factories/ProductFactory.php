@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Section;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Database\Factories\BaseFactory as Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
@@ -20,7 +20,7 @@ class ProductFactory extends Factory
         return [
             'name' => $this->faker->sentence(1),
             'description' => $this->faker->sentence(),
-            'section_id' => Section::inRandomOrder()->first('id')->id ?? Section::factory()->create()->id
+            'section_id' => $this->getModelId(Section::class),
         ];
     }
 }

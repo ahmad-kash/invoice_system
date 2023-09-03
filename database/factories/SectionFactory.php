@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Database\Factories\BaseFactory as Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Section>
@@ -20,7 +20,7 @@ class SectionFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'description' => $this->faker->sentence(),
-            'user_id' => User::inRandomOrder()->first('id')->id ?? User::factory()->create()->id,
+            'user_id' => $this->getModelId(User::class),
         ];
     }
 }
