@@ -31,7 +31,11 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
-    // Route::resource('invoices', InvoiceController::class);
-    Route::resource('products', ProductController::class);
+
     Route::resource('sections', SectionController::class);
+    Route::resource('products', ProductController::class);
+    Route::get('sections/{section}/products', [ProductController::class, 'getSectionProducts'])->name('sections.products');
+    Route::resource('invoices', InvoiceController::class);
+    Route::delete('invoices/forceDelete/{invoice}', [InvoiceController::class, 'forceDestroy'])->name('invoices.forceDestroy');
+    Route::put('invoices/restore/{invoice}', [InvoiceController::class, 'restore'])->withTrashed()->name('invoices.restore');
 });

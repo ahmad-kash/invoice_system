@@ -75,4 +75,9 @@ class ProductController extends Controller
 
         return redirect()->route('products.index');
     }
+
+    public function getSectionProducts(Section $section)
+    {
+        return $section->products()->select('id', 'name')->get();
+    }
 }
