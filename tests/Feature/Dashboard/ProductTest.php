@@ -4,7 +4,10 @@ namespace Tests\Feature\Dashboard;
 
 use App\Models\Product;
 use App\Models\Section;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\DashboardTestCase;
+
+use function PHPUnit\Framework\assertJson;
 
 class ProductTest extends DashboardTestCase
 {
@@ -27,7 +30,9 @@ class ProductTest extends DashboardTestCase
 
         $this->get(route('products.index'))
             ->assertOk()
-            ->assertViewHas('products', Product::with('section')->paginate(5))
+            ->assertViewHas('products', function ($paginator) use ($products) {
+                return $this->eloquentCollectionsAreEqual(collect($paginator->items()), $products);
+            })
             ->assertSeeInOrder($products->map(fn ($product) => $product->name)->toArray());
     }
 
@@ -67,20 +72,21 @@ class ProductTest extends DashboardTestCase
     {
         $sections = Section::factory(2)->create();
 
-        // the assertViewHas method make us use
-        // this instead of the $section->all() or $section->toArray()
-        $allSections = Section::all();
         // in create page
         $this->get(route('products.create'))
             ->assertOk()
-            ->assertViewHas('sections', $allSections)
+            ->assertViewHas('sections', function ($sectionsInView) use ($sections) {
+                return $this->eloquentCollectionsAreEqual($sectionsInView, $sections);
+            })
             ->assertSeeInOrder($sections->map(fn ($section) => $section->name)->toArray());
 
         // in edit page
         $product = Product::factory()->create();
         $this->get(route('products.edit', ['product' => $product->id]))
             ->assertOk()
-            ->assertViewHas('sections', $allSections)
+            ->assertViewHas('sections', function ($sectionsInView) use ($sections) {
+                return $this->eloquentCollectionsAreEqual($sectionsInView, $sections);
+            })
             ->assertSeeInOrder($sections->map(fn ($section) => $section->name)->toArray());
     }
 
@@ -160,5 +166,28 @@ class ProductTest extends DashboardTestCase
 
         $this->delete(route('products.destroy', ['product' => $product->id]))
             ->assertRedirectToRoute('products.index');
+    }
+
+    /** @test */
+    public function user_can_get_products_that_belong_to_a_section(): void
+    {
+        $section = Section::factory()->create();
+        $products = Product::factory(10)->create(['section_id' => $section->id]);
+        $this->withoutExceptionHandling();
+
+        $this->get(route('sections.products', ['section' => $section->id]))
+            ->assertOk()
+            ->assertJson(
+                function (AssertableJson $json) use ($products) {
+                    return $json->has(10)
+                        ->first(
+                            function (AssertableJson $json) use ($products) {
+                                return $json->where('id', $products[0]->id)
+                                    ->where('name', $products[0]->name)
+                                    ->etc();
+                            }
+                        );
+                }
+            );
     }
 }

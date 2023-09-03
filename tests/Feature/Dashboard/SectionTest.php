@@ -25,7 +25,9 @@ class SectionTest extends DashboardTestCase
         $sections = Section::factory(5)->create();
         $this->get(route('sections.index'))
             ->assertOk()
-            ->assertViewHas('sections', Section::paginate(5))
+            ->assertViewHas('sections', function ($paginator) use ($sections) {
+                return $this->eloquentCollectionsAreEqual(collect($paginator->items()), $sections);
+            })
             ->assertSeeInOrder($sections->map(fn ($section) => $section->name)->toArray());
     }
 
