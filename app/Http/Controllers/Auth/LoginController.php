@@ -19,13 +19,14 @@ class LoginController extends Controller
         if (auth()->attempt($request->validated())) {
             $request->session()->regenerate();
 
-            return redirect()->route('home');
+            return redirect()->intended('/');
         }
 
         return back()->withErrors([
             'email' => 'هنالك خطأ في البريد الاكتروني او كلمة المرور',
         ])->onlyInput('email');
     }
+
     public function destroy(Request $request)
     {
         auth()->logout();
