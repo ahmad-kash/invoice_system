@@ -200,7 +200,7 @@ class InvoiceTest extends DashboardTestCase
     {
         $faker = self::getFaker();
 
-        $fakeData = ['number' => 't4ts', 'due_date' => $faker->date(), 'create_date' => $faker->date(), 'payment_date' => $faker->date(), 'product_id' => 1, 'section_id' => 1, 'collection_amount' => $faker->randomNumber(), 'commission_amount' => $faker->randomNumber(), 'discount' => $faker->randomNumber(), 'VAT_rate' => '%' . (string)$faker->randomNumber(2), 'note' => $faker->sentence()];
+        $fakeData = ['number' => 't4ts', 'due_date' => $faker->date(), 'create_date' => $faker->date(), 'payment_date' => $faker->date(), 'product_id' => 1, 'section_id' => 1, 'collection_amount' => $faker->randomNumber(3), 'commission_amount' => $faker->randomNumber(2), 'discount' => $faker->randomNumber(1), 'VAT_rate' => '%' . (string)$faker->randomNumber(2), 'note' => $faker->sentence()];
 
         if (is_callable($value))
             $value = $value($fakeData);
