@@ -18,6 +18,11 @@ class FilesUploaderTest extends TestCase
 {
 
 
+    public function setUp(): void
+    {
+        parent::setUp();
+        Storage::fake();
+    }
     /** @test */
     public function it_throw_not_found_exception_if_file_is_missing_when_download(): void
     {
@@ -33,7 +38,7 @@ class FilesUploaderTest extends TestCase
             ->andReturn(true);
 
 
-        (new FilesUploader())->get($path);
+        app()->make(FilesUploader::class)->get($path);
     }
 
     /** @test */
@@ -50,9 +55,10 @@ class FilesUploaderTest extends TestCase
 
         Storage::shouldReceive('download')
             ->once()
-            ->with($path);
+            ->with($path)
+            ->andReturn(new \Symfony\Component\HttpFoundation\StreamedResponse());
 
-        (new FilesUploader())->download($path);
+        app()->make(FilesUploader::class)->download($path);
     }
 
 
@@ -72,7 +78,7 @@ class FilesUploaderTest extends TestCase
             ->andReturn(true);
 
 
-        (new FilesUploader())->get($path);
+        app()->make(FilesUploader::class)->get($path);
     }
 
     /** @test */
@@ -89,9 +95,10 @@ class FilesUploaderTest extends TestCase
 
         Storage::shouldReceive('get')
             ->once()
-            ->with($path);
+            ->with($path)
+            ->andReturn('someFileName');
 
-        (new FilesUploader())->get($path);
+        app()->make(FilesUploader::class)->get($path);
     }
 
     /** @test */
@@ -103,7 +110,7 @@ class FilesUploaderTest extends TestCase
             ->once()
             ->with('path', $file);
 
-        (new FilesUploader($file))->upload('path');
+        app()->make(FilesUploader::class)->upload('path', $file);
     }
 
     /** @test */
@@ -122,15 +129,14 @@ class FilesUploaderTest extends TestCase
             ->once()
             ->with('path', $file2);
 
-        (new FilesUploader([$file1, $file2]))->upload('path');
+        app()->make(FilesUploader::class)->upload('path', [$file1, $file2]);
     }
 
     /** @test */
     public function file_exists_after_uploading(): void
     {
-        Storage::fake();
         $file1 = UploadedFile::fake()->image('test1.jpg');
-        (new FilesUploader($file1))->upload('path');
+        app()->make(FilesUploader::class)->upload('path', $file1);
         Storage::assertExists('path/' . $file1->hashName());
     }
     /** @test */
@@ -145,10 +151,11 @@ class FilesUploaderTest extends TestCase
 
         Storage::shouldReceive('delete')
             ->once()
-            ->with(['path/' . $file1->hashName()]);
+            ->with(['path/' . $file1->hashName()])
+            ->andReturn(true);
 
 
-        (new FilesUploader())->delete('path/' . $file1->hashName());
+        app()->make(FilesUploader::class)->delete('path/' . $file1->hashName());
     }
 
     /** @test */
@@ -169,31 +176,32 @@ class FilesUploaderTest extends TestCase
 
         Storage::shouldReceive('delete')
             ->once()
-            ->with(['path/' . $file1->hashName(), 'path/' . $file2->hashName()]);
+            ->with(['path/' . $file1->hashName(), 'path/' . $file2->hashName()])
+            ->andReturn(true);
 
 
-        (new FilesUploader())->delete(['path/' . $file1->hashName(), 'path/' . $file2->hashName()]);
+        app()->make(FilesUploader::class)->delete(['path/' . $file1->hashName(), 'path/' . $file2->hashName()]);
     }
     /** @test */
     public function it_throw_an_exception_if_the_data_is_not_a_valid_file(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The data should be a valid file');
-        (new FilesUploader([UploadedFile::fake()->image('test1.jpg'), 'test', 12]));
+        app()->make(FilesUploader::class)->upload('path', [UploadedFile::fake()->image('test1.jpg'), 'test', 12]);
     }
     /** @test */
-    public function it_throw_an_exception_if_the_data_passed_not_array_or_collection_or_a_SplFileInfo(): void
+    public function it_throw_an_exception_if_the_data_passed_to_upload_method_not_array_or_collection_or_a_file_or_null(): void
     {
         $this->expectException(TypeError::class);
-        (new FilesUploader('test'));
+        app()->make(FilesUploader::class)->upload('path', 'test');
     }
 
     /** @test */
-    public function it_constructor_can_take_empty_var_or_empty_array_or_null_without_rising_exception(): void
+    public function it_upload_method_can_take_null_or_empty_array_or_nothing_instead_of_file_param(): void
     {
         $this->expectNotToPerformAssertions();
-        (new FilesUploader([]));
-        (new FilesUploader(null));
-        (new FilesUploader());
+        app()->make(FilesUploader::class)->upload('path');
+        app()->make(FilesUploader::class)->upload('path', []);
+        app()->make(FilesUploader::class)->upload('path', null);
     }
 }

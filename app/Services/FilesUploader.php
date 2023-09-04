@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Services\Interfaces\FilesUploaderInterface;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
@@ -9,15 +11,8 @@ use SplFileInfo;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Nette\DirectoryNotFoundException;
 
-class FilesUploader
+class FilesUploader implements FilesUploaderInterface
 {
-
-    private array|Collection $files;
-
-    public function __construct(Null|array|Collection|SplFileInfo $files = null)
-    {
-        $this->files = $this->normalizeFiles($files);
-    }
     private function normalizeFiles($files)
     {
         if (is_null($files))
@@ -44,31 +39,33 @@ class FilesUploader
             throw new FileNotFoundException("File does not exist at path {$path}.");
     }
 
-    public function upload(string $path)
+    public function upload(string $dirPath, Null|array|Collection|SplFileInfo $files = null): array
     {
-        $filesPaths = [];
+        $files = $this->normalizeFiles($files);
 
-        foreach ($this->files as $file) {
-            Storage::putFile($path, $file);
-            $filesPaths[] = $path . '/' . $file->hashName();
+        $filesNames = [];
+
+        foreach ($files as $file) {
+            Storage::putFile($dirPath, $file);
+            $filesNames[] = ['hash_name' => $file->hashName(), 'name' => $file->getClientOriginalName()];
         }
-        return $filesPaths;
+        return $filesNames;
     }
 
-    public function get(string $path)
+    public function get(string $path): string
     {
         $this->throwExceptionIfFileNotFound($path);
         return Storage::get($path);
     }
 
-    public function download(string $path)
+    public function download(string $path): StreamedResponse
     {
         $this->throwExceptionIfFileNotFound($path);
 
         return Storage::download($path);
     }
 
-    public function delete(array|string $paths)
+    public function delete(array|string $paths): bool
     {
         if (is_string($paths))
             $paths = [$paths];
@@ -80,7 +77,7 @@ class FilesUploader
         return Storage::delete($paths);
     }
 
-    public function deleteDirectory(string $path)
+    public function deleteDirectory(string $path): bool
     {
         if (Storage::isDirectory($path))
             throw new DirectoryNotFoundException("Directory not Found in path {$path}.");
