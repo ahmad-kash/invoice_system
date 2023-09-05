@@ -4,39 +4,31 @@ namespace App\Services\Invoice;
 
 use App\DTO\InvoiceDTO;
 use App\Models\Invoice;
-use App\Services\UploadFileService;
+use Illuminate\Support\Collection;
+use SplFileInfo;
 
 class InvoiceService
 {
-    private InvoiceFilesUploader $invoiceFilesUploader;
 
-    private InvoiceDTO $invoiceDTO;
-
-    public function __construct(InvoiceDTO $invoice, array $files = [])
+    public function __construct(private InvoiceAttachmentService $invoiceAttachment)
     {
-        $this->invoiceFilesUploader = new InvoiceFilesUploader($files);
-
-        $this->invoiceDTO = $invoice;
-    }
-    public static function make(InvoiceDTO $invoiceData, array $files = [])
-    {
-        return new self($invoiceData, $files);
     }
 
-    public function store(): Invoice
+    public function store(InvoiceDTO $invoiceDTO, Null|array|Collection|SplFileInfo $files = null): Invoice
     {
-        $this->invoiceDTO = InvoiceCalCulator::make($this->invoiceDTO)->execute();
-        $invoice = Invoice::create($this->invoiceDTO->toArray());
+        $invoiceDTO = InvoiceCalCulator::calculate($invoiceDTO);
 
-        $this->invoiceFilesUploader->execute($invoice);
+        $invoice = Invoice::create($invoiceDTO->toArray());
+
+        $this->invoiceAttachment->store($invoice, $files);
 
         return $invoice;
     }
-    public function update(Invoice $invoice): Invoice
+    public function update(InvoiceDTO $newInvoiceDTOData, Invoice $invoice): Invoice
     {
-        $this->invoiceDTO = InvoiceCalCulator::make($this->invoiceDTO)->execute();
+        $invoiceDTO = InvoiceCalCulator::calculate($newInvoiceDTOData);
 
-        $invoice->update($this->invoiceDTO->toArray());
+        $invoice->update($invoiceDTO->toArray());
 
         return $invoice;
     }

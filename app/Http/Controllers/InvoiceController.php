@@ -10,33 +10,20 @@ use App\Models\Invoice;
 use App\Models\Section;
 use App\Services\Invoice\InvoiceService;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+
 
 class InvoiceController extends Controller
 {
 
-    protected function resourceAbilityMap()
-    {
-        return [
-            'index' => 'viewAny',
-            'show' => 'view',
-            'create' => 'create',
-            'store' => 'create',
-            'edit' => 'update',
-            'update' => 'update',
-            'destroy' => 'delete',
-            'forceDestroy' => 'forceDelete',
-            'restore' => 'restore',
-        ];
-    }
-    public function __construct()
+    public function __construct(private InvoiceService $invoiceService)
     {
         $this->authorizeResource(Invoice::class, 'invoice');
     }
+
     /**
      * Display a listing of the resource.
      */
-    public function index(QueryBuilder $builder)
+    public function index()
     {
         return view('invoice.index', ['invoices' => Invoice::paginate(5)]);
     }
@@ -54,10 +41,10 @@ class InvoiceController extends Controller
      */
     public function store(StoreInvoiceRequest $request)
     {
-        $invoice = InvoiceService::make(
+        $invoice = $this->invoiceService->store(
             InvoiceDTO::fromArray($request->validated()),
-            $request->validated('files') ?? []
-        )->store();
+            $request->validated('files')
+        );
 
         return redirect()->route('invoices.index');
     }
@@ -83,9 +70,10 @@ class InvoiceController extends Controller
      */
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
-        $invoice = InvoiceService::make(
-            InvoiceDTO::fromArray($request->validated() + $invoice->getAttributes())
-        )->update($invoice);
+        $invoice = $this->invoiceService->update(
+            InvoiceDTO::fromArray($request->validated() + $invoice->getAttributes()),
+            $invoice
+        );
 
         return redirect()->route('invoices.index');
     }
@@ -111,5 +99,20 @@ class InvoiceController extends Controller
     {
         $invoice->restore();
         return redirect()->route('invoices.index');
+    }
+
+    protected function resourceAbilityMap()
+    {
+        return [
+            'index' => 'viewAny',
+            'show' => 'view',
+            'create' => 'create',
+            'store' => 'create',
+            'edit' => 'update',
+            'update' => 'update',
+            'destroy' => 'delete',
+            'forceDestroy' => 'forceDelete',
+            'restore' => 'restore',
+        ];
     }
 }
