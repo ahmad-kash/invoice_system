@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('invoice_id')->constrained('invoices')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('path', 999);
+            $table->string('hash_name', 999);
             $table->string('name', 999);
             $table->timestamps();
         });

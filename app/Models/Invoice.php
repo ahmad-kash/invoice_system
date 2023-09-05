@@ -43,4 +43,12 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceAttachment::class);
     }
+
+    public function __get($key)
+    {
+        if ($key === 'sectionName')
+            return $this->section->name;
+
+        return parent::__get($key);
+    }
 }

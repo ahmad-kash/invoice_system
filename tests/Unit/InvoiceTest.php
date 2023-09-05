@@ -69,4 +69,13 @@ class InvoiceTest extends TestCase
     {
         $this->assertContains(SoftDeletes::class, class_uses(Invoice::class));
     }
+
+    /** @test */
+    public function it_has_section_name_attribute(): void
+    {
+        $invoice = Invoice::factory()->create();
+
+        $this->assertIsString($invoice->sectionName);
+        $this->assertEquals($invoice->section->name, $invoice->sectionName);
+    }
 }
