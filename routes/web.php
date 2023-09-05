@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\InvoiceAttachmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
@@ -35,7 +36,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('sections', SectionController::class);
     Route::resource('products', ProductController::class);
     Route::get('sections/{section}/products', [ProductController::class, 'getSectionProducts'])->name('sections.products');
+
     Route::resource('invoices', InvoiceController::class);
     Route::delete('invoices/forceDelete/{invoice}', [InvoiceController::class, 'forceDestroy'])->name('invoices.forceDestroy');
     Route::put('invoices/restore/{invoice}', [InvoiceController::class, 'restore'])->withTrashed()->name('invoices.restore');
+
+    Route::get('attachments/{attachment}', [InvoiceAttachmentController::class, 'show'])->name('invoices.attachments.show');
+    Route::get('attachments/{attachment}/download', [InvoiceAttachmentController::class, 'download'])->name('invoices.attachments.download');
+    Route::post('invoices/{invoice}/attachments', [InvoiceAttachmentController::class, 'store'])->name('invoices.attachments.store');
+    Route::delete('attachments/{attachment}', [InvoiceAttachmentController::class, 'destroy'])->name('invoices.attachments.destroy');
 });

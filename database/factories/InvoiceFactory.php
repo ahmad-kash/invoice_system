@@ -20,16 +20,16 @@ class InvoiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'number' => str()->random(6),
+            'number' => $this->faker->bothify('???????'),
             'product_id' => $this->getModelId(Product::class),
             'section_id' => $this->getModelId(Section::class),
             'state' => InvoiceState::unPaid,
-            'collection_amount' => $amount = $this->faker->randomNumber(6),
+            'collection_amount' => $amount = $this->faker->randomNumber(4),
             'commission_amount' => $this->faker->randomNumber(3),
             'discount' => $this->faker->randomNumber(2),
-            'VAT_value' => $amount - $this->faker->randomNumber(4),
+            'VAT_value' => $amount - $this->faker->randomNumber(2),
             'VAT_rate' => '%5',
-            'total' => $this->faker->randomNumber(7),
+            'total' => $this->faker->randomNumber(4),
             'note' => $this->faker->sentence(),
             'create_date' => $this->faker->date(),
             'due_date' => $this->faker->date(),

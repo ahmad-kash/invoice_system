@@ -21,8 +21,8 @@ class InvoiceAttachmentFactory extends Factory
         return [
             'invoice_id' => $this->getModelId(Invoice::class),
             'user_id' => $this->getModelId(User::class),
-            'path' => $this->faker->filePath(),
-            'name' => $this->faker->text(8) . '.' . $this->faker->fileExtension()
+            'hash_name' => $this->faker->filePath(),
+            'name' => $this->faker->bothify('???????') . '.' . $this->faker->fileExtension(),
         ];
     }
 }

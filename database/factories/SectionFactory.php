@@ -18,7 +18,7 @@ class SectionFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->bothify('???????'),
             'description' => $this->faker->sentence(),
             'user_id' => $this->getModelId(User::class),
         ];
