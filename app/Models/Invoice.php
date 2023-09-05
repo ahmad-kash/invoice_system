@@ -14,6 +14,7 @@ class Invoice extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $additionalAttributeMap = ['sectionName' => 'getSectionName', 'productName' => 'getProductName'];
     protected $guarded = [];
 
     protected $hidden = [
@@ -44,10 +45,23 @@ class Invoice extends Model
         return $this->hasMany(InvoiceAttachment::class);
     }
 
+    public function getSectionName()
+    {
+        return $this->section->name;
+    }
+
+    public function getProductName()
+    {
+        return $this->product->name;
+    }
+
     public function __get($key)
     {
-        if ($key === 'sectionName')
-            return $this->section->name;
+        if (in_array($key, array_keys($this->additionalAttributeMap))) {
+            $method = $this->additionalAttributeMap[$key];
+            return $this->$method();
+        }
+
 
         return parent::__get($key);
     }

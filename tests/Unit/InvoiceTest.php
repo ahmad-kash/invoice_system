@@ -78,4 +78,13 @@ class InvoiceTest extends TestCase
         $this->assertIsString($invoice->sectionName);
         $this->assertEquals($invoice->section->name, $invoice->sectionName);
     }
+
+    /** @test */
+    public function it_has_product_name_attribute(): void
+    {
+        $invoice = Invoice::factory()->create();
+
+        $this->assertIsString($invoice->productName);
+        $this->assertEquals($invoice->product->name, $invoice->productName);
+    }
 }
