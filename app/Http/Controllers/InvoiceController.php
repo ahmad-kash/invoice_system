@@ -25,7 +25,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        return view('invoice.index', ['invoices' => Invoice::paginate(5)]);
+        return view('invoice.index', ['invoices' => Invoice::with(['product', 'section'])->paginate(5)]);
     }
 
     /**
