@@ -32,9 +32,8 @@
 
                 <div class="col">
                     <x-input-label for="due_date">تاريخ الاستحقاق</x-input-label>
-                    <x-text-input id="due_date" name="due_date"
-                        value="{{ old('due_date') ?? $invoice->due_date }}"class="fc-datepicker"
-                        placeholder="YYYY-MM-DD" type="text" required :hasError="$errors->has('due_date')" />
+                    <x-text-input id="due_date" name="due_date" value="{{ old('due_date') ?? $invoice->due_date }}"
+                        class="fc-datepicker" placeholder="YYYY-MM-DD" type="text" required :hasError="$errors->has('due_date')" />
                     <x-input-error :message="$errors->first('due_date')"></x-input-error>
                 </div>
 
@@ -44,8 +43,7 @@
             <div class="row">
                 <div class="col">
                     <label for="inputName" class="control-label">القسم</label>
-                    <select name="Section" class="form-control SlectBox" onclick="console.log($(this).val())"
-                        onchange="console.log('change is firing')">
+                    <select id="section" name="section" class="form-control" required>
                         @foreach ($sections as $section)
                             <option @selected(old('section') == $section->id || $invoice->section->id == $section->id) value="{{ $section->id }}"> {{ $section->name }}
                             </option>
@@ -55,8 +53,8 @@
 
                 <div class="col">
                     <label for="inputName" class="control-label">المنتج</label>
-                    <select id="product" name="product">
-                        <option value="{{ $invoice->product }}"> {{ $invoice->product }}</option>
+                    <select id="product" name="product" class="form-control" required>
+                        <option value="{{ $invoice->product->id }}"> {{ $invoice->productName }}</option>
                     </select>
                 </div>
 
@@ -64,7 +62,7 @@
                     <x-input-label for="collection_amount">مبلغ التحصيل</x-input-label>
                     <x-text-input type="text" id="collection_amount" name="collection_amount"
                         value="{{ old('collection_amount') ?? $invoice->collection_amount }}" oninput="asFloat(this)"
-                        :hasError="$errors->has('collection_amount')" />
+                        :hasError="$errors->has('collection_amount')" required />
                     <x-input-error :message="$errors->first('collection_amount')"></x-input-error>
                 </div>
             </div>
@@ -93,7 +91,8 @@
                 <div class="col">
                     <x-input-label for="VAT_rate">نسبة ضريبة القيمة المضافة</x-input-label>
                     <x-text-input name="VAT_rate" id="VAT_rate" onchange="myFunction()"
-                        value="{{ old('VAT_rate') ?? '%' . $invoice->VAT_rate }}" oninput="asPercentage(this)" />
+                        value="{{ old('VAT_rate') ?? '%' . $invoice->VAT_rate }}" oninput="asPercentage(this)"
+                        required />
                     <x-input-error :message="$errors->first('VAT_rate')"></x-input-error>
                 </div>
 

@@ -35,9 +35,9 @@
                     <td>{{ $invoice->number }} </td>
                     <td>{{ $invoice->create_date }}</td>
                     <td>{{ $invoice->due_date }}</td>
-                    <td>{{ $invoice->product }}</td>
+                    <td>{{ $invoice->productName }}</td>
                     <td><a href="#">
-                            {{-- href="{{ url('InvoicesDetails') }}/{{ $invoice->id }}"> --}}{{ $invoice->section->section_name }}
+                            {{-- href="{{ url('InvoicesDetails') }}/{{ $invoice->id }}"> --}}{{ $invoice->section->sectionName }}
                         </a>
                     </td>
                     <td>{{ $invoice->discount }}</td>
@@ -45,14 +45,7 @@
                     <td>{{ $invoice->VAT_value }}</td>
                     <td>{{ $invoice->total }}</td>
                     <td>
-                        {{-- @if ($invoice->Value_Status == 1)
-                            <span class="text-success">{{ $invoice->Status }}</span>
-                        @elseif($invoice->Value_Status == 2)
-                            <span class="text-danger">{{ $invoice->Status }}</span>
-                        @else
-                            <span class="text-warning">{{ $invoice->Status }}</span>
-                        @endif --}}
-                        {{ $invoice->state }}
+                        <x-invoice-state :state="$invoice->state->label()" />
                     </td>
 
                     <td>{{ $invoice->note }}</td>

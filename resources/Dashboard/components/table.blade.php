@@ -3,7 +3,7 @@
         <h3 class="card-title float-left">{{ $tableTop ?? '' }}</h3>
     </div>
     <!-- /.card-header -->
-    <div class="card-body p-0">
+    <div class="card-body p-0 overflow-auto">
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
