@@ -24,9 +24,7 @@ class InvoiceAttachmentService
 
     public function store(Invoice $invoice, Null|array|Collection|SplFileInfo $files): bool
     {
-        $dirPath = $this->getFileDirPath($invoice);
-
-        $filesData = $this->filesUploader->upload($dirPath, $files);
+        $filesData = $this->filesUploader->upload($invoice->getDirectory(), $files);
         foreach ($filesData as $data) {
             InvoiceAttachment::create($this->getDataToStore($invoice, $data));
         }
@@ -45,22 +43,16 @@ class InvoiceAttachmentService
 
     public function delete(InvoiceAttachment $attachment): bool
     {
-
         $this->filesUploader->delete($attachment->path);
 
         return $attachment->delete();
     }
 
-    public function deleteDirectory(Invoice $invoice): bool
+    public function deleteAll(Invoice $invoice): bool
     {
-        $this->filesUploader->deleteDirectory($this->getFileDirPath($invoice));
+        $this->filesUploader->deleteDirectory($invoice->getDirectory());
 
         return InvoiceAttachment::where('invoice_id', $invoice->id)->delete();
-    }
-
-    public function getFileDirPath(Invoice $invoice)
-    {
-        return $invoice->section->name . '/' . $invoice->number;
     }
 
     private function getDataToStore(Invoice $invoice, array $fileData): array
