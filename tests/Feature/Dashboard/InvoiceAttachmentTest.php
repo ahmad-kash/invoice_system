@@ -45,7 +45,7 @@ class InvoiceAttachmentTest extends DashboardTestCase
             ->assertRedirect(route('invoices.show', ['invoice' => $invoice->id]));
         $this->assertDatabaseHas('invoice_attachments', ['name' => $file->getClientOriginalName()]);
 
-        Storage::assertExists(app()->make(InvoiceAttachmentService::class)->getFileDirPath($invoice) . '/' . $file->hashName());
+        Storage::assertExists($invoice->getDirectory() . '/' . $file->hashName());
     }
 
     /** @test */

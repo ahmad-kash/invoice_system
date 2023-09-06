@@ -12,6 +12,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Mockery\MockInterface;
+use Nette\DirectoryNotFoundException;
 use TypeError;
 
 class FilesUploaderTest extends TestCase
@@ -23,6 +25,40 @@ class FilesUploaderTest extends TestCase
         parent::setUp();
         Storage::fake();
     }
+
+    /** @test */
+    public function it_throw_directory_not_found_exception_if_directory_is_missing_deleting_directory(): void
+    {
+
+        $path  = "someFilePath";
+
+        $this->expectException(DirectoryNotFoundException::class);
+        $this->expectExceptionMessage("Directory not Found in path {$path}.");
+        Storage::shouldReceive('directoryExists')->with($path)->andReturn(false);
+
+        app()->make(FilesUploader::class)->deleteDirectory($path);
+    }
+
+    /** @test */
+    public function it_can_delete_a_directory(): void
+    {
+
+        $path  = "someFilePath";
+
+        Storage::shouldReceive('directoryExists')
+            ->with($path)
+            ->andReturn(true);
+
+        Storage::shouldReceive('deleteDirectory')
+            ->once()
+            ->with($path)
+            ->andReturn(true);
+
+
+        app()->make(FilesUploader::class)->deleteDirectory($path);
+    }
+
+
     /** @test */
     public function it_throw_not_found_exception_if_file_is_missing_when_download(): void
     {

@@ -79,7 +79,7 @@ class FilesUploader implements FilesUploaderInterface
 
     public function deleteDirectory(string $path): bool
     {
-        if (Storage::isDirectory($path))
+        if (!Storage::directoryExists($path))
             throw new DirectoryNotFoundException("Directory not Found in path {$path}.");
 
         return Storage::deleteDirectory($path);

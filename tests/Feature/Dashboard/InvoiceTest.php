@@ -5,9 +5,11 @@ namespace Tests\Feature\Dashboard;
 use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\Section;
+use App\Services\Invoice\InvoiceAttachmentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\DashboardTestCase;
 
 class InvoiceTest extends DashboardTestCase
@@ -242,11 +244,17 @@ class InvoiceTest extends DashboardTestCase
     /** @test */
     public function user_can_force_delete_invoice(): void
     {
+        Storage::fake();
         $invoice = Invoice::factory()->create();
+        $file = UploadedFile::fake()->image('file.jpg');
+        app()->make(InvoiceAttachmentService::class)->store($invoice, $file);
+        $dirPath = $invoice->getDirectory();
 
         $this->delete(route('invoices.forceDestroy', ['invoice' => $invoice->id]))
             ->assertRedirectToRoute('invoices.index');
 
-        $this->assertDatabaseMissing('invoices', ['number' => $invoice->number]);
+        $this->assertDatabaseEmpty('invoices');
+        $this->assertDatabaseEmpty('invoice_attachments');
+        $this->assertDirectoryDoesNotExist($dirPath);
     }
 }
