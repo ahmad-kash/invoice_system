@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('invoice_id')->constrained('invoices')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users');
             $table->unsignedTinyInteger('state')->default(0);
-            $table->text('note')->default('');
-            $table->date('payment_date')->nullable();
+            $table->decimal('amount', 8, 2)->default(0);
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }
