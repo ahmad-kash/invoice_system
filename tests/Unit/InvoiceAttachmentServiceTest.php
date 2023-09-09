@@ -50,7 +50,7 @@ class InvoiceAttachmentServiceTest extends TestCase
     /** @test */
     public function it_can_show_a_file(): void
     {
-        $path = bcrypt('some hashed path');
+        $path = 'longpathnameooooooooooooooooooooooopppppp';
         $file = UploadedFile::fake()->image('file.jpg');
         app(FilesUploaderInterface::class)->upload($path, $file);
 
