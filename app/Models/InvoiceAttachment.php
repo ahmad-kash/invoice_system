@@ -19,11 +19,17 @@ class InvoiceAttachment extends Model
         return $this->belongsTo(Invoice::class);
     }
 
-    public function __get($key)
+    public function user(): BelongsTo
     {
-        if ($key === 'path')
-            return $this->invoice->sectionName . '/' . $this->invoice->number . '/' . $this->hash_name;
+        return $this->belongsTo(User::class);
+    }
 
-        return parent::__get($key);
+    protected function getUserNameAttribute(): string
+    {
+        return $this->user->name;
+    }
+    protected function getPathAttribute(): string
+    {
+        return $this->invoice->sectionName . '/' . $this->invoice->number . '/' . $this->hash_name;
     }
 }
