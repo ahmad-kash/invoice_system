@@ -24,7 +24,7 @@ class StoreUpdateProductRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:999'],
             'section_id' => ['required', 'exists:sections,id'],
-            'description' => ['nullable', 'string'],
+            'description' => ['sometimes', 'nullable', 'string'],
         ];
     }
 }

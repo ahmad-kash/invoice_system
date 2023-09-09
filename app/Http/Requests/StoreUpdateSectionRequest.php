@@ -23,7 +23,7 @@ class StoreUpdateSectionRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:999'],
-            'description' => ['nullable', 'string'],
+            'description' => ['sometimes', 'nullable', 'string'],
         ];
     }
 }
