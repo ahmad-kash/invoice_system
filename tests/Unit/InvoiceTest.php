@@ -55,13 +55,13 @@ class InvoiceTest extends TestCase
     }
 
     /** @test */
-    public function it_has_attachment(): void
+    public function it_has_attachments(): void
     {
         $invoice = Invoice::factory()->create();
         $attachment = InvoiceAttachment::factory(2)->create(['invoice_id' => $invoice->id]);
 
-        $this->assertInstanceOf(InvoiceAttachment::class, $invoice->attachment->first());
-        $this->assertEloquentCollectionsEqual($invoice->attachment, $attachment);
+        $this->assertInstanceOf(InvoiceAttachment::class, $invoice->attachments->first());
+        $this->assertEloquentCollectionsEqual($invoice->attachments, $attachment);
     }
 
     /** @test */

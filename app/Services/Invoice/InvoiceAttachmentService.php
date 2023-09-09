@@ -8,6 +8,7 @@ use App\Services\Interfaces\FilesUploaderInterface;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use SplFileInfo;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class InvoiceAttachmentService
@@ -24,16 +25,16 @@ class InvoiceAttachmentService
 
     public function store(Invoice $invoice, Null|array|Collection|SplFileInfo $files): bool
     {
-        $filesData = $this->filesUploader->upload($invoice->getDirectory(), $files);
+        $filesData = $this->filesUploader->upload($invoice->directory, $files);
         foreach ($filesData as $data) {
             InvoiceAttachment::create($this->getDataToStore($invoice, $data));
         }
         return true;
     }
 
-    public function show(string $path): string
+    public function show(string $path): BinaryFileResponse
     {
-        return $this->filesUploader->get($path);
+        return response()->file(storage_path('app/' . $path));
     }
 
     public function download(string $path): StreamedResponse
@@ -50,7 +51,7 @@ class InvoiceAttachmentService
 
     public function deleteAll(Invoice $invoice): bool
     {
-        $this->filesUploader->deleteDirectory($invoice->getDirectory());
+        $this->filesUploader->deleteDirectory($invoice->directory);
 
         return InvoiceAttachment::where('invoice_id', $invoice->id)->delete();
     }

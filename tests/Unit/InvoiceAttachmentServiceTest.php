@@ -8,7 +8,9 @@ use App\Services\Interfaces\FilesUploaderInterface;
 use App\Services\Invoice\InvoiceAttachmentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Routing\ResponseFactory;
 use Mockery\MockInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use tests\TestCase;
 
@@ -36,7 +38,7 @@ class InvoiceAttachmentServiceTest extends TestCase
 
         $this->mock(FilesUploaderInterface::class, function (MockInterface $mock) use ($invoice, $file, $returnedData) {
             $mock->shouldReceive('upload')
-                ->with($invoice->getDirectory(), $file)
+                ->with($invoice->directory, $file)
                 ->andReturn([$returnedData]);
         });
 
@@ -48,13 +50,15 @@ class InvoiceAttachmentServiceTest extends TestCase
     /** @test */
     public function it_can_show_a_file(): void
     {
-        $this->mock(FilesUploaderInterface::class, function (MockInterface $mock) {
-            $mock->shouldReceive('get')
-                ->with('path')
-                ->andReturn('some file path');
-        });
+        $path = bcrypt('some hashed path');
+        $file = UploadedFile::fake()->image('file.jpg');
+        app(FilesUploaderInterface::class)->upload($path, $file);
 
-        $this->assertEquals('some file path', app(InvoiceAttachmentService::class)->show('path'));
+        $showedFile = app(InvoiceAttachmentService::class)->show($path . '/' . $file->hashName());
+
+        $this->assertInstanceOf(BinaryFileResponse::class, $showedFile);
+
+        app(FilesUploaderInterface::class)->deleteDirectory($path);
     }
 
     /** @test */
@@ -91,7 +95,7 @@ class InvoiceAttachmentServiceTest extends TestCase
         $invoiceAttachments = InvoiceAttachment::factory(5)->create(['invoice_id' => $invoice->id]);
         $this->mock(FilesUploaderInterface::class, function (MockInterface $mock) use ($invoice) {
             $mock->shouldReceive('deleteDirectory')
-                ->with($invoice->getDirectory())
+                ->with($invoice->directory)
                 ->andReturn(true);
         });
 

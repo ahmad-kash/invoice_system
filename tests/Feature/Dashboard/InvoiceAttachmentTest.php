@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Mockery\MockInterface;
 use Tests\DashboardTestCase;
 
 
@@ -45,7 +46,7 @@ class InvoiceAttachmentTest extends DashboardTestCase
             ->assertRedirect(route('invoices.show', ['invoice' => $invoice->id]));
         $this->assertDatabaseHas('invoice_attachments', ['name' => $file->getClientOriginalName()]);
 
-        Storage::assertExists($invoice->getDirectory() . '/' . $file->hashName());
+        Storage::assertExists($invoice->directory . '/' . $file->hashName());
     }
 
     /** @test */
@@ -68,9 +69,17 @@ class InvoiceAttachmentTest extends DashboardTestCase
     public function user_can_show_attachment(): void
     {
         [$invoice, $invoiceAttachment] = $this->getInvoiceWithAnAttachment();
+        $this->partialMock(InvoiceAttachmentService::class, function (MockInterface $mock) use ($invoiceAttachment) {
+            $mock->shouldReceive('show')
+                ->with($invoiceAttachment->path)
+                ->andReturn(
+                    response()
+                        ->file(storage_path('framework/testing/disks/local/' . $invoiceAttachment->path))
+                );
+        });
 
         $this->get(route('invoices.attachments.show', ['attachment' => $invoiceAttachment->id]))
-            ->assertContent(Storage::get($invoiceAttachment->path));
+            ->assertHeader('content-type', 'image/jpeg');
     }
 
     /** @test */

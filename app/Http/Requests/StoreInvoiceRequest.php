@@ -28,7 +28,6 @@ class StoreInvoiceRequest extends FormRequest
         return [
             'number' => ['required', 'string', 'alpha_num'],
             'due_date' => ['required', 'date'],
-            'create_date' => ['required', 'date'],
             'payment_date' => ['required', 'date'],
             'product_id' => ['required', 'exists:products,id'],
             'section_id' => ['required', 'exists:sections,id'],
@@ -36,11 +35,10 @@ class StoreInvoiceRequest extends FormRequest
             'commission_amount' => ['required', 'numeric', 'gt:0'],
             'discount' => ['required', 'numeric', 'gt:0'],
             'VAT_rate' => ['required', 'string', 'regex:/%\d+/'],
-            'note' => ['required', 'string'],
+            'note' => ['sometimes', 'nullable', 'string'],
             'files' => ['sometimes'],
             'files.*' => [
                 'sometimes', 'file', File::types(['png', 'jpg', 'pdf', 'jpeg'])
-                    ->min('1mb')
                     ->max('2mb')
             ]
 

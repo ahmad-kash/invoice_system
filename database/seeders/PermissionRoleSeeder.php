@@ -20,6 +20,7 @@ class PermissionRoleSeeder extends Seeder
         $permissions = [
             'show invoice', 'create invoice',
             'delete invoice', 'edit invoice',
+            'force delete invoice', 'restore invoice',
             'create section', 'show section',
             'delete section', 'edit section',
             'create product', 'show product',

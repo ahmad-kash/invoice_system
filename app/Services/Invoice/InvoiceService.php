@@ -14,6 +14,10 @@ class InvoiceService
     {
     }
 
+    public function getAllWithPagination()
+    {
+        return Invoice::with(['product', 'section'])->paginate(5);
+    }
     public function store(InvoiceDTO $invoiceDTO, Null|array|Collection|SplFileInfo $files = null): Invoice
     {
         $invoiceDTO = InvoiceCalCulator::calculate($invoiceDTO);
@@ -31,5 +35,22 @@ class InvoiceService
         $invoice->update($invoiceDTO->toArray());
 
         return $invoice;
+    }
+
+    public function restore(Invoice $invoice): bool
+    {
+        return $invoice->restore();
+    }
+    public function delete(Invoice $invoice): bool
+    {
+        // this is a soft delete we will not delete any record but set deleted_at to true
+        return $invoice->delete();
+    }
+    public function forceDelete(Invoice $invoice): bool
+    {
+        //here we should delete all the invoice attachments for this invoice
+        $this->invoiceAttachment->deleteAll($invoice);
+
+        return $invoice->forceDelete();
     }
 }

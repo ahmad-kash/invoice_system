@@ -32,55 +32,70 @@
             @forelse ($invoices as $invoice)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $invoice->number }} </td>
-                    <td>{{ $invoice->create_date }}</td>
+                    <td>
+                        <a href="{{ route('invoices.show', ['invoice' => $invoice->id]) }}">
+                            {{ $invoice->number }}
+                        </a>
+                    </td>
+                    <td>{{ $invoice->payment_date }}</td>
                     <td>{{ $invoice->due_date }}</td>
                     <td>{{ $invoice->productName }}</td>
-                    <td><a href="#">
-                            {{-- href="{{ url('InvoicesDetails') }}/{{ $invoice->id }}"> --}}{{ $invoice->section->sectionName }}
-                        </a>
+                    <td>
                     </td>
                     <td>{{ $invoice->discount }}</td>
                     <td>{{ $invoice->VAT_value }}</td>
                     <td>{{ $invoice->VAT_value }}</td>
                     <td>{{ $invoice->total }}</td>
                     <td>
-                        <x-invoice-state :state="$invoice->state->label()" />
+                        <x-invoice.invoice-state :state="$invoice->state->label()" />
                     </td>
 
                     <td>{{ $invoice->note }}</td>
                     <td>
                         <div class="dropdown">
-                            <button aria-expanded="false" aria-haspopup="true" class="btn ripple btn-primary btn-sm"
-                                data-toggle="dropdown" type="button">العمليات<i
-                                    class="fas fa-caret-down ml-1"></i></button>
+                            <button aria-expanded="false" aria-haspopup="true"
+                                class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
+                                type="button">العمليات</button>
                             <div class="dropdown-menu tx-13">
                                 @can('edit invoice')
-                                    <a class="dropdown-item" href=" route('invoices.edit',['invoice'=>$invoice->id])">تعديل
+                                    <a class="dropdown-item"
+                                        href="{{ route('invoices.edit', ['invoice' => $invoice->id]) }} ">
+                                        <i class="fas fa-edit"></i> تعديل
                                         الفاتورة</a>
                                 @endcan
 
                                 @can('delete invoice')
-                                    <a class="dropdown-item" href="#" data-invoice_id="{{ $invoice->id }}"
-                                        data-toggle="modal" data-target="#delete_invoice"><i
-                                            class="text-danger fas fa-trash-alt"></i>&nbsp;&nbsp;حذف
-                                        الفاتورة</a>
-                                @endcan
-                                {{--
-                                @can('change invoice state')
-                                    <a class="dropdown-item" href="{{ URL::route('Status_show', [$invoice->id]) }}"><i
-                                            class=" text-success fas
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    fa-money-bill"></i>&nbsp;&nbsp;تغير
-                                        حالة
-                                        الدفع</a>
+                                    <a class="dropdown-item archive" href="#" data-id="{{ $invoice->id }}"
+                                        data-number="{{ $invoice->number }}" data-toggle="modal"
+                                        data-target="#archive_invoice"><i class="text-warning fas fa-exchange-alt"></i> نقل
+                                        الى
+                                        الارشيف</a>
+                                    <form class="d-none" method="POST"
+                                        action="{{ route('invoices.destroy', $invoice->id) }}">
+                                        @csrf
+                                        @method('delete')
+                                        <button id="archive-{{ $invoice->id }}">delete</button>
+                                    </form>
                                 @endcan
 
-                                @can('archive invoice')
-                                    <a class="dropdown-item" href="#" data-invoice_id="{{ $invoice->id }}"
-                                        data-toggle="modal" data-target="#Transfer_invoice"><i
-                                            class="text-warning fas fa-exchange-alt"></i>&nbsp;&nbsp;نقل الي
-                                        الارشيف</a>
+                                @can('make-a-payment')
+                                    <a class="dropdown-item"
+                                        href="{{ route('invoices.payments.create', ['invoice' => $invoice->id]) }}">
+                                        <i class=" text-success fas fa-money-bill"></i>
+                                        دفع الفاتورة</a>
                                 @endcan
+                                @can('force delete invoice')
+                                    <a class="dropdown-item delete" href="#" data-id="{{ $invoice->id }}"
+                                        data-number="{{ $invoice->number }}" data-toggle="modal"
+                                        data-target="#delete_invoice"><i class="text-danger fas fa-trash-alt"></i> حذف</a>
+                                    <form class="d-none" method="POST"
+                                        action="{{ route('invoices.forceDestroy', $invoice->id) }}">
+                                        @csrf
+                                        @method('delete')
+                                        <button id="delete-{{ $invoice->id }}">delete</button>
+                                    </form>
+                                @endcan
+                                {{--
 
                                 @can('print invoice')
                                     <a class="dropdown-item" href="Print_invoice/{{ $invoice->id }}"><i
@@ -109,16 +124,37 @@
     </x-table>
 
     @push('bodyScripts')
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            const elements = document.querySelectorAll('.btn-danger');
-            console.log("{{ route('invoices.index') }}");
+            const archiveElements = document.querySelectorAll('.archive');
+
+            function archiveEvent(e) {
+                const invoiceId = e.target.getAttribute('data-id');
+                const invoiceNumber = e.target.getAttribute('data-number');
+                Swal.fire({
+                    title: `هل انت متأكد من انك تريد ارشفة الفاتورة ${invoiceNumber}`,
+                    showCancelButton: true,
+                    confirmButtonText: 'ارشفة',
+                    cancelButtonText: 'الغاء',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById(`archive-${invoiceId}`).click();
+                    }
+                });
+            }
+
+
+            archiveElements.forEach((item) => {
+                item.addEventListener('click', archiveEvent);
+            });
+
+            const deleteElements = document.querySelectorAll('.delete');
 
             function deleteEvent(e) {
                 const invoiceId = e.target.getAttribute('data-id');
-                const invoiceName = e.target.getAttribute('data-name');
+                const invoiceNumber = e.target.getAttribute('data-number');
                 Swal.fire({
-                    title: `هل انت متأكد من انك تريد حذف الفاتورة ${invoiceName}`,
+                    title: `هل انت متأكد من انك تريد حذف الفاتورة ${invoiceNumber}`,
                     showCancelButton: true,
                     confirmButtonText: 'حذف',
                     cancelButtonText: 'الغاء',
@@ -130,7 +166,7 @@
             }
 
 
-            elements.forEach((item) => {
+            deleteElements.forEach((item) => {
                 item.addEventListener('click', deleteEvent);
             });
         </script>

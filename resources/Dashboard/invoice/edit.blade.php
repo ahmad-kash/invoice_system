@@ -22,12 +22,12 @@
                 </div>
 
                 <div class="col">
-                    <x-input-label for="create_date">تاريخ الفاتورة</x-input-label>
-                    <x-text-input id="create_date" name="create_date"
-                        value="{{ old('create_date') ?? $invoice->create_date }}" class="fc-datepicker"
+                    <x-input-label for="payment_date">تاريخ الفاتورة</x-input-label>
+                    <x-text-input id="payment_date" name="payment_date"
+                        value="{{ old('payment_date') ?? $invoice->payment_date }}" class="fc-datepicker"
                         placeholder="YYYY-MM-DD" type="text" value="{{ date('Y-m-d') }}" required
-                        :hasError="$errors->has('create_date')" />
-                    <x-input-error :message="$errors->first('create_date')"></x-input-error>
+                        :hasError="$errors->has('payment_date')" />
+                    <x-input-error :message="$errors->first('payment_date')"></x-input-error>
                 </div>
 
                 <div class="col">
@@ -42,8 +42,8 @@
             {{-- 2 --}}
             <div class="row">
                 <div class="col">
-                    <label for="inputName" class="control-label">القسم</label>
-                    <select id="section" name="section" class="form-control" required>
+                    <label for="section_id" class="control-label">القسم</label>
+                    <select id="section_id" name="section_id" class="form-control" required>
                         @foreach ($sections as $section)
                             <option @selected(old('section') == $section->id || $invoice->section->id == $section->id) value="{{ $section->id }}"> {{ $section->name }}
                             </option>
@@ -52,8 +52,8 @@
                 </div>
 
                 <div class="col">
-                    <label for="inputName" class="control-label">المنتج</label>
-                    <select id="product" name="product" class="form-control" required>
+                    <label for="product_id" class="control-label">المنتج</label>
+                    <select id="product_id" name="product_id" class="form-control" required>
                         <option value="{{ $invoice->product->id }}"> {{ $invoice->productName }}</option>
                     </select>
                 </div>

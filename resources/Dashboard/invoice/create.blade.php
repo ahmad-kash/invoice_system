@@ -9,9 +9,8 @@
 
     </x-slot:breadcrumb>
     <div class="card card-primary mx-3 my-2">
-        <!-- /.card-header -->
-        <!-- form start -->
-        <form id="create-invoice" class="p-3" method="POST" action="{{ route('invoices.store') }}">
+        <form id="create-invoice" class="p-3" method="POST" action="{{ route('invoices.store') }}"
+            enctype="multipart/form-data">
             @csrf
             {{-- 1 --}}
 
@@ -24,13 +23,10 @@
                 </div>
 
                 <div class="col">
-                    <x-input-label for="create_date">تاريخ الفاتورة</x-input-label>
-
-                    {{-- <input type="text" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask> --}}
-
-                    <x-text-input id="create_date" name="create_date" value="{{ old('create_date') ?? '' }}"
-                        class="fc-datepicker" type="text" required :hasError="$errors->has('create_date')" placeholder="YYYY-MM-DD" />
-                    <x-input-error :message="$errors->first('create_date')"></x-input-error>
+                    <x-input-label for="payment_date">تاريخ الفاتورة</x-input-label>
+                    <x-text-input id="payment_date" name="payment_date" value="{{ old('payment_date') ?? '' }}"
+                        class="fc-datepicker" type="text" required :hasError="$errors->has('payment_date')" placeholder="YYYY-MM-DD" />
+                    <x-input-error :message="$errors->first('payment_date')"></x-input-error>
                 </div>
 
                 <div class="col">
@@ -45,13 +41,13 @@
             {{-- 2 --}}
             <div class="row">
                 <div class="col">
-                    <x-input-label for="section">القسم</x-input-label>
+                    <x-input-label for="section_id">القسم</x-input-label>
                     @if ($sections->isEmpty())
                         <div class="alert alert-danger">
                             رجاء قم باضافة قسم
                         </div>
                     @else
-                        <select id="section" name="section" class="form-control" required>
+                        <select id="section_id" name="section_id" class="form-control" required>
                             <!--placeholder-->
                             <option value="" selected disabled>حدد القسم</option>
                             @foreach ($sections as $section)
@@ -64,8 +60,8 @@
                 </div>
 
                 <div class="col">
-                    <x-input-label for="product">المنتج</x-input-label>
-                    <select id="product" name="product" class="form-control" required>
+                    <x-input-label for="product_id">المنتج</x-input-label>
+                    <select id="product_id" name="product_id" class="form-control" required>
                         <option selected disabled>حدد المنتج المطلوب</option>
                     </select>
                     <x-input-error :message="$errors->first('product')"></x-input-error>
@@ -86,15 +82,15 @@
 
                 <div class="col">
                     <x-input-label for="commission_amount">مبلغ العمولة</x-input-label>
-                    <x-text-input type="text"  id="commission_amount" name="commission_amount"
-                        required value="{{ old('commission_amount') ?? '' }}" title="يرجي ادخال مبلغ العمولة " required
+                    <x-text-input type="text" id="commission_amount" name="commission_amount" required
+                        value="{{ old('commission_amount') ?? '' }}" title="يرجي ادخال مبلغ العمولة " required
                         :hasError="$errors->has('commission_amount')" />
                     <x-input-error :message="$errors->first('commission_amount')"></x-input-error>
                 </div>
 
                 <div class="col">
                     <x-input-label for="discount">الخصم</x-input-label>
-                    <x-text-input type="text"  id="discount" name="discount" required
+                    <x-text-input type="text" id="discount" name="discount" required
                         value="{{ old('discount') ?? '' }}" title="يرجي ادخال مبلغ الخصم " :hasError="$errors->has('discount')" />
                     <x-input-error :message="$errors->first('discount')"></x-input-error>
                 </div>
@@ -140,8 +136,18 @@
 
             <div class="col-sm-12 col-md-12">
                 <x-text-input accept=".pdf,.jpg, .png, image/jpeg, image/png" type="file" name="files[]" multiple
-                    class="form-control dropify" :hasError="$errors->has('files')" data-height="7" />
-                <x-input-error :message="$errors->first('picture')"></x-input-error>
+                    class="form-control dropify" :hasError="$errors->has('files.*')" data-height="7" />
+                @if ($errors->has('files.*'))
+                    <ul>
+                        @foreach ($errors->get('files.*') as $errors)
+                            @foreach ($errors as $error)
+                                <li>
+                                    <span class="text-danger">{{ $error }}</span>
+                                </li>
+                            @endforeach
+                        @endforeach
+                    </ul>
+                @endif
             </div><br>
 
             <div class="d-flex justify-content-center">

@@ -1,8 +1,8 @@
 export default class ProductsHandler {
 
     constructor() {
-        this.selectListSection = document.querySelector('#section');
-        this.selectListProduct = document.querySelector('#product');
+        this.selectListSection = document.querySelector('#section_id');
+        this.selectListProduct = document.querySelector('#product_id');
         this.products = [];
         this.selectedSectionId = null;
     }

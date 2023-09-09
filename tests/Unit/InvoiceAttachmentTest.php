@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Invoice;
 use App\Models\InvoiceAttachment;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,6 +20,26 @@ class InvoiceAttachmentTest extends TestCase
 
         $this->assertInstanceOf(Invoice::class, $attachment->invoice);
         $this->assertEquals($invoice->id, $attachment->invoice->id);
+    }
+
+
+    /** @test */
+    public function it_belong_to_a_user(): void
+    {
+        $user = User::factory()->create();
+        $attachment = InvoiceAttachment::factory()->create(['user_id' => $user->id]);
+
+        $this->assertInstanceOf(User::class, $attachment->user);
+        $this->assertEquals($attachment->user->id, $user->id);
+    }
+
+    /** @test */
+    public function it_has_a_user_name_attribute(): void
+    {
+        $user = User::factory()->create();
+        $attachment = InvoiceAttachment::factory()->create(['user_id' => $user->id]);
+
+        $this->assertEquals($attachment->userName, $user->name);
     }
 
     /** @test */

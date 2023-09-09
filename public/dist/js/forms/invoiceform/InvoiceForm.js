@@ -28,10 +28,6 @@ export default class InvoiceForm extends Form {
         this.handelProducts();
         this.handleInputsMask(inputWatcher);
     }
-    beforeSubmit() {
-        let VATRate = document.querySelector("#VAT_rate")
-        VATRate.value = VATRate.value.slice(1);
-    }
     handelCalculations() {
         this.invoiceCalculationHandler.execute();
     }

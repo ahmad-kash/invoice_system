@@ -63,6 +63,16 @@ class InvoiceTest extends DashboardTestCase
     }
 
     /** @test */
+    public function user_can_see_show_invoice_page(): void
+    {
+        $invoice = Invoice::factory()->create();
+        $this->get(route('invoices.show', ['invoice' => $invoice->id]))
+            ->assertOk()
+            ->assertSee('الفاتورة')
+            ->assertViewHas('invoice', $invoice);
+    }
+
+    /** @test */
     public function user_can_see_create_invoice_page(): void
     {
         $this->get(route('invoices.create'))
@@ -106,7 +116,7 @@ class InvoiceTest extends DashboardTestCase
     public function user_can_create_invoice(): void
     {
 
-        $invoice = Invoice::factory()->make();
+        $invoice = Invoice::factory()->make(['collection_amount' => 1000, 'commission_amount' => 700]);
         $this->post(route('invoices.store'), $invoice->toArray())
             ->assertRedirectToRoute('invoices.index');
 
@@ -118,7 +128,7 @@ class InvoiceTest extends DashboardTestCase
     /** @test */
     public function user_can_edit_invoice(): void
     {
-        $invoice = Invoice::factory()->create();
+        $invoice = Invoice::factory()->create(['collection_amount' => 1000, 'commission_amount' => 700]);
 
         $this->withoutExceptionHandling();
         $this->put(route('invoices.update', ['invoice' => $invoice->id]), ['number' => 'test'])
@@ -166,9 +176,6 @@ class InvoiceTest extends DashboardTestCase
             'due_date is null' => static::getFakeDataForValidation('due_date', null),
             'due_date is not a date' => static::getFakeDataForValidation('due_date', 'test'),
 
-            'create_date is null' => static::getFakeDataForValidation('create_date', null),
-            'create_date is not a date' => static::getFakeDataForValidation('create_date', 'test'),
-
             'payment_date is null' => static::getFakeDataForValidation('payment_date', null),
             'payment_date is not a date' => static::getFakeDataForValidation('payment_date', 'test'),
 
@@ -194,7 +201,6 @@ class InvoiceTest extends DashboardTestCase
             'VAT_rate is not string' => static::getFakeDataForValidation('VAT_rate', 1),
             'VAT_rate does not began with %' => static::getFakeDataForValidation('VAT_rate', '1'),
 
-            'note is null' => static::getFakeDataForValidation('note', null),
             'note is not string' => static::getFakeDataForValidation('note', 1),
         ];
     }
@@ -248,7 +254,7 @@ class InvoiceTest extends DashboardTestCase
         $invoice = Invoice::factory()->create();
         $file = UploadedFile::fake()->image('file.jpg');
         app()->make(InvoiceAttachmentService::class)->store($invoice, $file);
-        $dirPath = $invoice->getDirectory();
+        $dirPath = $invoice->directory;
 
         $this->delete(route('invoices.forceDestroy', ['invoice' => $invoice->id]))
             ->assertRedirectToRoute('invoices.index');

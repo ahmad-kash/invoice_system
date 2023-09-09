@@ -26,5 +26,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([PermissionRoleSeeder::class]);
         $admin->assignRole('admin');
+        \App\Models\Invoice::factory(20)->create();
+        \App\Models\InvoiceAttachment::factory(10)->create();
+        // \App\Models\PaymentDetail::factory(10)->create();
     }
 }

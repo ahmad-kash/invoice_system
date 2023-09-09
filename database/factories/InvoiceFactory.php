@@ -31,7 +31,6 @@ class InvoiceFactory extends Factory
             'VAT_rate' => '%5',
             'total' => $this->faker->randomNumber(4),
             'note' => $this->faker->sentence(),
-            'create_date' => $this->faker->date(),
             'due_date' => $this->faker->date(),
             'payment_date' => $this->faker->date(),
 

@@ -3,6 +3,7 @@
 namespace App\DTO;
 
 use App\Enums\InvoiceState;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 
@@ -11,7 +12,6 @@ readonly class InvoiceDTO
     public function __construct(
         public  string  $number,
         public  string  $due_date,
-        public  string  $create_date,
         public  string  $payment_date,
         public  int  $product_id,
         public  int  $section_id,
@@ -31,9 +31,8 @@ readonly class InvoiceDTO
     {
         return new self(
             number: $invoiceData['number'],
-            due_date: $invoiceData['due_date'],
-            create_date: $invoiceData['create_date'],
-            payment_date: $invoiceData['payment_date'],
+            due_date: new Carbon($invoiceData['due_date']),
+            payment_date: new Carbon($invoiceData['payment_date']),
             product_id: $invoiceData['product_id'],
             section_id: $invoiceData['section_id'],
             collection_amount: $invoiceData['collection_amount'],
@@ -43,7 +42,7 @@ readonly class InvoiceDTO
             VAT_value: $invoiceData['VAT_value'] ?? 0,
             total: $invoiceData['total'] ?? 0,
             state: self::ToInvoiceState($invoiceData['state'] ?? null),
-            note: $invoiceData['note'],
+            note: $invoiceData['note'] ?? '',
         );
     }
     public function toArray()
@@ -51,7 +50,6 @@ readonly class InvoiceDTO
         return [
             'number' => $this->number,
             'due_date' => $this->due_date,
-            'create_date' => $this->create_date,
             'payment_date' => $this->payment_date,
             'product_id' => $this->product_id,
             'section_id' => $this->section_id,

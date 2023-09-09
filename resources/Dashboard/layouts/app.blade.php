@@ -8,7 +8,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+
+    <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
 
     <link rel="stylesheet" href="{{ URL::asset('/plugins/fontawesome-free/css/all.min.css') }}">
 
@@ -77,10 +78,9 @@
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     {{-- @vite('public/dist/js/resolveConflict.js') --}}
     <!-- Bootstrap 4 rtl -->
-    <script src="https://cdn.rtlcss.com/bootstrap/v4.2.1/js/bootstrap.min.js" defer></script>
-
-    {{-- @vite('public/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- <script src="https://cdn.rtlcss.com/bootstrap/v4.2.1/js/bootstrap.min.js" defer></script> --}}
+    <script src="{{ URL::asset('/plugins/bootstrap/js/bootstrap.bundle.min.js') }}" {{-- @vite('public/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') --}} <script
+        src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @stack('bodyScripts')
 

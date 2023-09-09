@@ -25,7 +25,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        return view('invoice.index', ['invoices' => Invoice::with(['product', 'section'])->paginate(5)]);
+        return view('invoice.index', ['invoices' => $this->invoiceService->getAllWithPagination()]);
     }
 
     /**
@@ -54,7 +54,7 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
-        //
+        return view('invoice.show', ['invoice' => $invoice]);
     }
 
     /**
@@ -83,7 +83,8 @@ class InvoiceController extends Controller
      */
     public function destroy(Invoice $invoice)
     {
-        $invoice->delete();
+        $this->invoiceService->delete($invoice);
+
         return redirect()->route('invoices.index');
     }
     /**
@@ -91,13 +92,15 @@ class InvoiceController extends Controller
      */
     public function forceDestroy(Invoice $invoice)
     {
-        $invoice->forceDelete();
+        $this->invoiceService->forceDelete($invoice);
+
         return redirect()->route('invoices.index');
     }
 
     public function restore(Invoice $invoice)
     {
-        $invoice->restore();
+        $this->invoiceService->restore($invoice);
+
         return redirect()->route('invoices.index');
     }
 

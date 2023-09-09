@@ -63,10 +63,9 @@
     </x-table>
 
     @push('bodyScripts')
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             const elements = document.querySelectorAll('.btn-danger');
-            console.log("{{ route('sections.index') }}");
 
             function deleteEvent(e) {
                 const sectionId = e.target.getAttribute('data-id');

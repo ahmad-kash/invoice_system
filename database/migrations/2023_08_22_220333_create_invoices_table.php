@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('VAT_rate', 999);
             $table->decimal('total', 8, 2);
             $table->text('note')->nullable();
-            $table->date('create_date')->nullable();
             $table->date('due_date')->nullable();
             $table->date('payment_date')->nullable();
             $table->softDeletes();

@@ -22,8 +22,8 @@ class PaymentDetailFactory extends Factory
             'invoice_id' => $this->getModelId(Invoice::class),
             'user_id' => $this->getModelId(User::class),
             'state' => $this->faker->numberBetween(1, 3),
+            'amount' => $this->faker->randomNumber(3),
             'note' => $this->faker->sentence(),
-            'payment_date' => $this->faker->date(),
         ];
     }
 }
