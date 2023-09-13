@@ -20,13 +20,13 @@ class LoginTest extends TestCase
         $this->get(route('login.create'))->assertOk();
     }
 
-    public static function provideRouteListExceptLogin(): array
+    public static function provideRouteListExceptLoginAndReset(): array
     {
         $app = (new self('test'))->createApplication();
 
         $laravelDefualtRoutes = ['sanctum/csrf-cookie', '_ignition/health-check', '_ignition/execute-solution', '_ignition/update-config'];
 
-        $routeExceptList = [...$laravelDefualtRoutes, 'login'];
+        $routeExceptList = [...$laravelDefualtRoutes, 'login', 'reset'];
 
         $routeList = [];
         foreach ($app->make(Router::class)->getRoutes() as $route)
@@ -38,10 +38,10 @@ class LoginTest extends TestCase
 
     /**
      * @test
-     * @dataProvider provideRouteListExceptLogin
+     * @dataProvider provideRouteListExceptLoginAndReset
      */
 
-    public function guest_can_not_see_any_page_except_login(string $routeUrl): void
+    public function guest_can_not_see_any_page_except_login_and_reset(string $routeUrl): void
     {
         $this->get($routeUrl)->assertRedirectToRoute('login.create');
     }

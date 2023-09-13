@@ -8,7 +8,7 @@ use Spatie\Permission\Models\Role;
 
 class PermissionRoleTestFactory
 {
-    private array $defaultRoles = ['user', 'admin'];
+    private array $defaultRoles = ['user', 'admin', 'data entry'];
     private array $defaultPermission = ['show invoice', 'delete invoice', 'edit invoice', 'create invoice'];
     private array $defaultRolesWithPermissions =
     [
