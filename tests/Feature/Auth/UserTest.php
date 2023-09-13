@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Mail\WelcomeMail;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use Spatie\Permission\Models\Role;
 use Tests\DashboardTestCase;
 
 class UserTest extends DashboardTestCase
@@ -38,8 +39,12 @@ class UserTest extends DashboardTestCase
     public function admin_can_see_update_user_page(): void
     {
         $user = User::factory()->create();
+        $role = Role::create(['name' => 'user']);
+        // use must have a role
+        $user->assignRole('user');
 
-        $this->withoutExceptionHandling();
+
+
         $this->get(route('users.edit', ['user' => $user->id]))
             ->assertViewHasAll(['user', 'roles'])
             ->assertViewIs('user.edit')
@@ -55,7 +60,6 @@ class UserTest extends DashboardTestCase
             'is_active' => false,
             'name' => 'new name',
         ];
-        $this->withoutExceptionHandling();
         $this->put(route('users.update', ['user' => $user->id]), $newUserData)
             ->assertRedirect(route('users.index'));
 
