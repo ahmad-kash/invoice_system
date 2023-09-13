@@ -53,10 +53,11 @@ class UserService
         return true;
     }
 
-    public function update(User $user, UserDTO $userDTO, string $role): bool
+    public function update(User $user, UserDTO $userDTO, ?string $role): bool
     {
         $user->update($userDTO->toUpdateArray());
-        $user->syncRoles([$role]);
+        if (!is_null($role))
+            $user->syncRoles([$role]);
 
         return true;
     }

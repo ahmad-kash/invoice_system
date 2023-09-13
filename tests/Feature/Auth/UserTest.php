@@ -17,6 +17,7 @@ class UserTest extends DashboardTestCase
             'show user', 'update user',
             'delete user', 'show all users',
             'force delete user',
+            'reset password'
         ];
     }
 
@@ -54,7 +55,7 @@ class UserTest extends DashboardTestCase
             'is_active' => false,
             'name' => 'new name',
         ];
-
+        $this->withoutExceptionHandling();
         $this->put(route('users.update', ['user' => $user->id]), $newUserData)
             ->assertRedirect(route('users.index'));
 
