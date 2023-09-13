@@ -1,13 +1,18 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\InvoiceAttachmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\UserController;
+use App\Mail\WelcomeMail;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +33,12 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'create'])->middleware('throttle:login')->name('login.create');
     Route::post('login', [LoginController::class, 'store'])->name('login.store');
+
+
+    Route::middleware('signed')->group(function () {
+        Route::get('reset', [ResetPasswordController::class, 'create'])->name('password.reset.create');
+        Route::post('reset', [ResetPasswordController::class, 'store'])->name('password.reset.store');
+    });
 });
 
 
@@ -49,4 +60,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('invoices/{invoice}/payments', [InvoicePaymentController::class, 'create'])->name('invoices.payments.create');
     Route::post('invoices/{invoice}/payments', [InvoicePaymentController::class, 'store'])->name('invoices.payments.store');
+
+    Route::resource('users', UserController::class);
+    Route::delete('users/forceDelete/{user}', [UserController::class, 'forceDestroy'])->name('users.forceDestroy');
+    Route::put('reset/{user}', [ResetPasswordController::class, 'update'])->name('password.reset.update');
 });

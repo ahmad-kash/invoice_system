@@ -2,12 +2,13 @@
 
 namespace App\DTO;
 
+use App\DTO\Interfaces\DTOInterface;
 use App\Enums\InvoiceState;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 
-readonly class InvoiceDTO
+readonly class InvoiceDTO implements DTOInterface
 {
     public function __construct(
         public  string  $number,
@@ -27,7 +28,7 @@ readonly class InvoiceDTO
     ) {
     }
 
-    public static function fromArray(array $invoiceData)
+    public static function fromArray(array $invoiceData): self
     {
         return new self(
             number: $invoiceData['number'],
@@ -45,7 +46,7 @@ readonly class InvoiceDTO
             note: $invoiceData['note'] ?? '',
         );
     }
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'number' => $this->number,
