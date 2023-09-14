@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\InvoiceAttachmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePaymentController;
@@ -64,4 +65,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::delete('users/forceDelete/{user}', [UserController::class, 'forceDestroy'])->name('users.forceDestroy');
     Route::put('reset/{user}', [ResetPasswordController::class, 'update'])->name('password.reset.update');
+
+    Route::resource('roles', RoleController::class);
 });

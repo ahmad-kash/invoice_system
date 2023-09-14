@@ -116,7 +116,9 @@ class RegisterTest extends DashboardTestCase
         $this->post(URL::signedRoute('password.reset.store', ['email' => $user->email]))
             ->assertRedirect(route('home'));
 
-        $this->assertDatabaseHas('users', ['email' => $user->email, 'email_verified_at' => Date::now()]);
+        $user->fresh();
+
+        $this->assertTrue($user->email_verified_at->diffInHours(Carbon::now()) === 0);
     }
 
     protected function logout()

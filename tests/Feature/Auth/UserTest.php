@@ -14,8 +14,9 @@ class UserTest extends DashboardTestCase
     public function getPermissions(): array
     {
         return [
-            'show user', 'edit user',
-            'delete user', 'show all users',
+            'show user',
+            'edit user',
+            'delete user',
             'force delete user',
             'reset password'
         ];

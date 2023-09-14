@@ -19,16 +19,19 @@ class PermissionRoleSeeder extends Seeder
 
         $permissions = [
             'show invoice', 'create invoice',
-            'delete invoice', 'edit invoice',
-            'force delete invoice', 'restore invoice',
-            'create user', 'edit user',
-            'force delete user',
-            'delete user', 'show user',
+            'edit invoice', 'delete invoice',
+            'restore invoice', 'force delete invoice',
+            'show user', 'create user',
+            'edit user', 'delete user',
+            'restore user', 'force delete user',
             'reset password',
-            'create section', 'show section',
-            'delete section', 'edit section',
-            'create product', 'show product',
-            'delete product', 'edit product'
+            'show section', 'create section',
+            'edit section', 'delete section',
+            'show product', 'create product',
+            'edit product', 'delete product',
+            'show role', 'create role',
+            'edit role', 'delete role',
+
         ];
         foreach ($permissions as $permission)
             Permission::create(['name' => $permission]);
