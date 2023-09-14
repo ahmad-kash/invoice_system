@@ -42,6 +42,6 @@ class User extends Authenticatable
 
     public function getRoleNameAttribute()
     {
-        return $this->roles[0]->name;
+        return $this->roles->isNotEmpty() ? $this->roles[0]->name : null;
     }
 }
