@@ -9,7 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
-    <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
+    <title>{{ $pageTitle ?? config('app.name', 'Laravel') }}</title>
 
     <link rel="stylesheet" href="{{ URL::asset('/plugins/fontawesome-free/css/all.min.css') }}">
 
