@@ -25,7 +25,6 @@ class UserPermissionTest extends TestCase
 
         $permissions = [
             'create user',
-            'update user',
             'edit user',
             'show user',
             'delete user',
