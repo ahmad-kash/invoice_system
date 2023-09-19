@@ -3,17 +3,15 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\RoleController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoiceAttachmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\UserController;
-use App\Mail\WelcomeMail;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\URL;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -25,11 +23,6 @@ use Illuminate\Support\Facades\URL;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', function () {
-    return view('home');
-})->middleware('auth')->name('home');
-
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'create'])->middleware('throttle:login')->name('login.create');
@@ -44,6 +37,9 @@ Route::middleware('guest')->group(function () {
 
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 
     Route::resource('sections', SectionController::class);

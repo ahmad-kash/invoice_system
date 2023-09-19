@@ -10,14 +10,22 @@ use Tests\TestCase;
 class DashboardTest extends TestCase
 {
     use RefreshDatabase;
+
     /** @test */
-    public function auth_user_can_see_dashboard(): void
+    public function user_can_see_statistic(): void
     {
-        $this->signIn()->get(route('home'))->assertSee('Dashboard')->assertOk();
-    }
-    /** @test */
-    public function guest_can_not_see_dashboard(): void
-    {
-        $this->get(route('home'))->assertRedirectToRoute('login.create');
+        $this->signIn();
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertViewHasAll([
+                'totalInvoicesCount',
+                'paidInvoicesCount',
+                'unPaidInvoicesCount',
+                'partiallyPaidInvoicesCount',
+                'totalInvoicesSum',
+                'paidInvoicesSum',
+                'unPaidInvoicesSum',
+                'partiallyPaidInvoicesSum'
+            ]);
     }
 }
