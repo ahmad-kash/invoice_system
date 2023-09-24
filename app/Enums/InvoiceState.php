@@ -12,4 +12,13 @@ enum InvoiceState: int
     {
         return $this->name;
     }
+    public static function fromString($strState): ?InvoiceState
+    {
+        return match (strtolower($strState)) {
+            strtolower('unPaid') => InvoiceState::unPaid,
+            strtolower('paid') => InvoiceState::paid,
+            strtolower('partiallyPaid') => InvoiceState::partiallyPaid,
+            default => null
+        };
+    }
 }

@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Dashboard;
 
+use App\Enums\InvoiceState;
 use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\Section;
 use App\Services\Invoice\InvoiceAttachmentService;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -40,6 +42,92 @@ class InvoiceTest extends DashboardTestCase
             })
             ->assertSeeInOrder($invoices->map(fn ($invoice) => $invoice->number)->toArray());
     }
+
+    /** @test */
+    public function user_can_filter_invoices_by_number(): void
+    {
+        $invoices = Invoice::factory(5)->create();
+        $targetedInvoice = Invoice::factory()->create();
+
+        $this->get(route('invoices.index', ['number' => $invoices[0]->number]))
+            ->assertOk()
+            ->assertSee($invoices[0]->number)
+            ->assertDontSee(
+                $invoices->filter(fn ($invoice) => $invoice->number != $invoices[0]->number)
+                    ->map(fn ($invoice) => $invoice->number)->toArray()
+            );
+    }
+
+    /** @test */
+    public function user_can_filter_invoices_by_section_name(): void
+    {
+        $invoices = Invoice::factory(5)->create();
+        $newSection = Section::factory()->create();
+        $targetedInvoice = Invoice::factory()->create(['section_id' => $newSection->id]);
+
+
+        $this->get(route('invoices.index', ['section' => $targetedInvoice->sectionName]))
+            ->assertOk()
+            ->assertSee($targetedInvoice->number)
+            ->assertDontSee(
+                $invoices->filter(fn ($invoice) => $invoice->number != $targetedInvoice->number)
+                    ->map(fn ($invoice) => $invoice->number)->toArray()
+            );
+    }
+
+    /** @test */
+    public function user_can_filter_invoices_by_product_name(): void
+    {
+        $invoices = Invoice::factory(5)->create();
+        $newProduct = Product::factory()->create();
+        $targetedInvoice = Invoice::factory()->create(['product_id' => $newProduct->id]);
+
+
+        $this->get(route('invoices.index', ['product' => $targetedInvoice->productName]))
+            ->assertOk()
+            ->assertSee($targetedInvoice->number)
+            ->assertDontSee(
+                $invoices->filter(fn ($invoice) => $invoice->number != $targetedInvoice->number)
+                    ->map(fn ($invoice) => $invoice->number)->toArray()
+            );
+    }
+
+    /** @test */
+    public function user_can_filter_invoices_by_state(): void
+    {
+        $invoices = Invoice::factory(5)->create();
+        $targetedInvoice = Invoice::factory()->create(['state' => InvoiceState::paid->value]);
+
+
+        $this->get(route('invoices.index', ['state' => 'paid']))
+            ->assertOk()
+            ->assertSee($targetedInvoice->number)
+            ->assertDontSee(
+                $invoices->filter(fn ($invoice) => $invoice->number != $targetedInvoice->number)
+                    ->map(fn ($invoice) => $invoice->number)->toArray()
+            );
+    }
+
+    /** @test */
+    public function user_can_filter_invoices_by_date(): void
+    {
+        $invoicePaymentIsNow = Invoice::factory()->create(['payment_date' => Carbon::now()->format('Y-m-d')]);
+        $invoicePaymentIsFrom10Days = Invoice::factory()->create(['payment_date' => Carbon::now()->subDays(10)->format('Y-m-d')]);
+        $invoicePaymentIsFrom20Days = Invoice::factory()->create(['payment_date' => Carbon::now()->subDays(20)->format('Y-m-d')]);
+        $invoicePaymentIsFrom30Days = Invoice::factory()->create(['payment_date' => Carbon::now()->subDays(30)->format('Y-m-d')]);
+
+        $this->get(route('invoices.index', ['from' => Carbon::now()->subDays(21)->format('Y-m-d')]))
+            ->assertOk()
+            ->assertSee([$invoicePaymentIsNow->number, $invoicePaymentIsFrom10Days->number, $invoicePaymentIsFrom20Days->number])
+            ->assertDontSee($invoicePaymentIsFrom30Days->number);
+
+
+        $this->get(route('invoices.index', ['to' => Carbon::now()->subDays(21)->format('Y-m-d')]))
+            ->assertOk()
+            ->assertSee($invoicePaymentIsFrom30Days->number)
+            ->assertDontSee([$invoicePaymentIsNow->number, $invoicePaymentIsFrom10Days->number, $invoicePaymentIsFrom20Days->number]);
+    }
+
 
     /** @test */
     public function user_can_see_no_invoice_found_message_if_there_is_not_any_invoices_in_database(): void

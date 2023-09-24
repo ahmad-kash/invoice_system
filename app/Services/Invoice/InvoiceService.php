@@ -14,9 +14,9 @@ class InvoiceService
     {
     }
 
-    public function getAllWithPagination()
+    public function getAllWithFiltering(array $filters)
     {
-        return Invoice::with(['product', 'section'])->paginate(5);
+        return Invoice::with(['product', 'section'])->filter($filters)->paginate(5);
     }
     public function store(InvoiceDTO $invoiceDTO, Null|array|Collection|SplFileInfo $files = null): Invoice
     {

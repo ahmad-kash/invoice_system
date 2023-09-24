@@ -20,10 +20,11 @@ readonly class InvoiceDTO implements DTOInterface
         public  float  $commission_amount,
         public  float  $discount,
         public  float  $VAT_rate,
-        public  float  $VAT_value = 0,
-        public  float  $total = 0,
         public  InvoiceState $state,
         public  string  $note,
+        public  float  $VAT_value = 0,
+        public  float  $total = 0,
+
 
     ) {
     }

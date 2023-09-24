@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\InvoiceState;
+use App\Filters\InvoiceFilter;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,9 +22,13 @@ class Invoice extends Model
     ];
 
     protected $casts = [
-        'state' => InvoiceState::class
+        'state' => InvoiceState::class,
     ];
 
+    public  function newEloquentBuilder($query)
+    {
+        return new InvoiceFilter($query);
+    }
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

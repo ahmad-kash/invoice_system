@@ -11,12 +11,16 @@
 
     <x-table>
         <x-slot:tableTop>
-            <a class="btn btn-primary" href="{{ route('invoices.create') }}">اضافة فاتورة</a>
+            <div class="flex">
+                <a class="btn btn-primary" href="{{ route('invoices.create') }}">اضافة فاتورة</a>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filters">بحث</button>
+            </div>
+            <x-invoice.filter></x-invoice.filter>
         </x-slot:tableTop>
         <x-slot:tableHeader>
             <th>#</th>
             <th>رقم الفاتورة</th>
-            <th>تاريخ القاتورة</th>
+            <th>تاريخ الفاتورة</th>
             <th>تاريخ الاستحقاق</th>
             <th>المنتج</th>
             <th>القسم</th>
@@ -67,7 +71,8 @@
                                 @can('delete invoice')
                                     <a class="dropdown-item archive" href="#" data-id="{{ $invoice->id }}"
                                         data-number="{{ $invoice->number }}" data-toggle="modal"
-                                        data-target="#archive_invoice"><i class="text-warning fas fa-exchange-alt"></i> نقل
+                                        data-target="#archive_invoice"><i class="text-warning fas fa-exchange-alt"></i>
+                                        نقل
                                         الى
                                         الارشيف</a>
                                     <form class="d-none" method="POST"
@@ -95,14 +100,6 @@
                                         <button id="delete-{{ $invoice->id }}">delete</button>
                                     </form>
                                 @endcan
-                                {{--
-
-                                @can('print invoice')
-                                    <a class="dropdown-item" href="Print_invoice/{{ $invoice->id }}"><i
-                                            class="text-success fas fa-print"></i>&nbsp;&nbsp;طباعة
-                                        الفاتورة
-                                    </a>
-                                @endcan --}}
                             </div>
                         </div>
 
@@ -117,7 +114,7 @@
         <x-slot:tableBottom>
 
             <div class="p-2 mr-5">
-                {{ $invoices->links() }}
+                {{ $invoices->withQueryString()->links() }}
             </div>
 
         </x-slot:tableBottom>

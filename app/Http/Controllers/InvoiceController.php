@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTO\InvoiceDTO;
 use App\Enums\InvoiceState;
+use App\Http\Requests\InvoiceFilterRequest;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Invoice;
@@ -23,9 +24,13 @@ class InvoiceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(InvoiceFilterRequest $request)
     {
-        return view('invoice.index', ['invoices' => $this->invoiceService->getAllWithPagination()]);
+
+        return view(
+            'invoice.index',
+            ['invoices' => $this->invoiceService->getAllWithFiltering($filters = $request->query())]
+        );
     }
 
     /**
