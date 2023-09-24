@@ -20,6 +20,9 @@
                     <x-slot:amount>
                         {{ $totalInvoicesSum }}
                     </x-slot:amount>
+                    <x-slot:link>
+                        {{ route('invoices.index') }}
+                    </x-slot:link>
                 </x-box>
             </div>
             <div class="col-lg-3 col-6">
@@ -33,6 +36,9 @@
                     <x-slot:amount>
                         {{ $paidInvoicesSum }}
                     </x-slot:amount>
+                    <x-slot:link>
+                        {{ route('invoices.index', ['state' => 'paid']) }}
+                    </x-slot:link>
                 </x-box>
             </div>
             <div class="col-lg-3 col-6">
@@ -46,6 +52,9 @@
                     <x-slot:amount>
                         {{ $unPaidInvoicesSum }}
                     </x-slot:amount>
+                    <x-slot:link>
+                        {{ route('invoices.index', ['state', 'unPaid']) }}
+                    </x-slot:link>
                 </x-box>
             </div>
             <div class="col-lg-3 col-6">
@@ -59,6 +68,9 @@
                     <x-slot:amount>
                         {{ $partiallyPaidInvoicesSum }}
                     </x-slot:amount>
+                    <x-slot:link>
+                        {{ route('invoices.index', ['state' => 'partiallyPaid']) }}
+                    </x-slot:link>
                 </x-box>
             </div>
         </div>
