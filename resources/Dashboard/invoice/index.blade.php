@@ -44,8 +44,7 @@
                     <td>{{ $invoice->payment_date }}</td>
                     <td>{{ $invoice->due_date }}</td>
                     <td>{{ $invoice->productName }}</td>
-                    <td>
-                    </td>
+                    <td>{{ $invoice->sectionName }}</td>
                     <td>{{ $invoice->discount }}</td>
                     <td>{{ $invoice->VAT_value }}</td>
                     <td>{{ $invoice->VAT_value }}</td>
