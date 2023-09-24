@@ -20,7 +20,7 @@ trait HasCollectionAssert
         $collection1 = $this->normalizeCollection($collection1, $keys);
         $collection2 = $this->normalizeCollection($collection2, $keys);
 
-        return $collection1->diff($collection2)->isEmpty();
+        return $collection1->diffAssoc($collection2)->isEmpty() && $collection2->diffAssoc($collection1)->isEmpty();
     }
 
     private function normalizeCollection(Collection|EloquentCollection $collection, Collection|array $keys = []): Collection
