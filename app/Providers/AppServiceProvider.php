@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Services\FilesUploader;
 use App\Services\Interfaces\FilesUploaderInterface;
+use Carbon\Carbon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Blade::anonymousComponentPath(resource_path('Dashboard'), 'dashboard');
         Paginator::useBootstrapFour();
+        Carbon::setLocale('ar');
     }
 }

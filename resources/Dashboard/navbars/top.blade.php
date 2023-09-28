@@ -106,30 +106,29 @@
         </li>
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
+            @php
+                $unreadNotifications = auth()->user()->unreadNotifications;
+            @endphp
             <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
-                <i class="far fa-bell"></i>
-                <span class="badge badge-warning navbar-badge">15</span>
+                <i class="fa fa-bell"></i>
+                <span class="badge badge-warning navbar-badge">{{ $unreadNotifications->count() }}</span>
             </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-item dropdown-header">15 Notifications</span>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item" aria-expanded="false">
-                    <i class="fas fa-envelope mr-2"></i> 4 new messages
-                    <span class="float-right text-muted text-sm">3 mins</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item" aria-expanded="false">
-                    <i class="fas fa-users mr-2"></i> 8 friend requests
-                    <span class="float-right text-muted text-sm">12 hours</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item" aria-expanded="false">
-                    <i class="fas fa-file mr-2"></i> 3 new reports
-                    <span class="float-right text-muted text-sm">2 days</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer" aria-expanded="false">See All
-                    Notifications</a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right"
+                style="max-height:20rem;max-width:20rem;overflow-y:auto;overflow-x:hidden; ">
+
+                <div class="dropdown-item dropdown-header d-flex justify-content-between align-items-center">
+                    <span class="mr-1">عدد الاشعارات
+                        {{ $unreadNotifications->count() }}</span>
+                    <form method="POST" action="{{ route('notifications.showAll') }}">
+                        @csrf
+                        <button class="btn btn-primary btn-sm">تحديد الكل كمقروء</button>
+                    </form>
+
+                </div>
+                @foreach ($unreadNotifications as $notification)
+                    <div class="dropdown-divider"></div>
+                    <x-notification.notify :notification="$notification" />
+                @endforeach
             </div>
         </li>
     </ul>

@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoiceAttachmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePaymentController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\UserController;
@@ -41,6 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
+
+    Route::get('notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
+    Route::post('notifications', [NotificationController::class, 'showAll'])->name('notifications.showAll');
 
     Route::resource('sections', SectionController::class);
     Route::resource('products', ProductController::class);

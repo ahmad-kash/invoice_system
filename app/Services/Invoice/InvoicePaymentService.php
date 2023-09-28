@@ -5,6 +5,9 @@ namespace App\Services\Invoice;
 use App\Enums\InvoiceState;
 use App\Models\Invoice;
 use App\Models\PaymentDetail;
+use App\Notifications\Database\Invoice\InvoicePaid;
+use App\Notifications\Database\Invoice\InvoicePaidPartially;
+use App\Services\Notification\AdminNotifyService;
 use Illuminate\Testing\Exceptions\InvalidArgumentException;
 use Nette\ArgumentOutOfRangeException;
 
@@ -12,27 +15,8 @@ class InvoicePaymentService
 {
     private float $allPayments;
 
-    private function amountsIsSmallerThanTotal(Invoice $invoice): bool
+    public function __construct(private AdminNotifyService $adminNotifyService)
     {
-        return $invoice->total >= $this->allPayments;
-    }
-
-    private function changeInvoiceState(Invoice $invoice): bool
-    {
-        return $invoice->update(['state' => $this->getNewState($invoice)]);
-    }
-
-    private function makeAPayment(Invoice $invoice, float $amount, ?string $note): bool
-    {
-        $invoice->paymentDetails()->create([
-            'user_id' => auth()->id(),
-            'state' => $this->getNewState($invoice),
-            'amount' => $amount,
-            'note' => $note ?? '',
-        ]);
-
-        $this->changeInvoiceState($invoice);
-        return true;
     }
 
     public function setAllPayments(Invoice $invoice, float $amount): void
@@ -66,5 +50,38 @@ class InvoicePaymentService
     {
         $this->setAllPayments($invoice, 0);
         return $this->allPayments;
+    }
+
+    private function makeAPayment(Invoice $invoice, float $amount, ?string $note): bool
+    {
+        $invoice->paymentDetails()->create([
+            'user_id' => auth()->id(),
+            'state' => $this->getNewState($invoice),
+            'amount' => $amount,
+            'note' => $note ?? '',
+        ]);
+
+        $this->changeInvoiceState($invoice);
+
+        $this->sendNotification($invoice, $amount);
+
+        return true;
+    }
+
+    private function sendNotification($invoice, $amount): void
+    {
+        if ($this->getNewState($invoice) === InvoiceState::paid)
+            $this->adminNotifyService->notifyAdmins(new InvoicePaid($invoice, auth()->user()));
+        else
+            $this->adminNotifyService->notifyAdmins(new InvoicePaidPartially($invoice, auth()->user(), $amount));
+    }
+    private function amountsIsSmallerThanTotal(Invoice $invoice): bool
+    {
+        return $invoice->total >= $this->allPayments;
+    }
+
+    private function changeInvoiceState(Invoice $invoice): bool
+    {
+        return $invoice->update(['state' => $this->getNewState($invoice)]);
     }
 }
