@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Enums\InvoiceState;
 use App\Models\Invoice;
 use App\Services\Invoice\InvoicePaymentService;
+use App\Services\Notification\AdminNotifyService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Exceptions\InvalidArgumentException;
 use Nette\ArgumentOutOfRangeException;
@@ -19,9 +20,12 @@ class InvoicePaymentServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->mock(AdminNotifyService::class, function ($mock) {
+            $mock->shouldReceive('notifyAdmins');
+        });
 
         $this->invoice = Invoice::factory()->create(['total' => 1000]);
-        $this->invoicePaymentService = new InvoicePaymentService();
+        $this->invoicePaymentService = app(InvoicePaymentService::class);
     }
 
     /** @test */
