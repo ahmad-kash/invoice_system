@@ -21,8 +21,4 @@ abstract class InvoiceNotification extends DatabaseNotification
 
         ] + $this->additionalData();
     }
-    function additionalData(): array
-    {
-        return [];
-    }
 }

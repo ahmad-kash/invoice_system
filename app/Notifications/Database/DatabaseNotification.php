@@ -20,5 +20,10 @@ abstract class DatabaseNotification extends Notification
         return ['database'];
     }
 
+    protected function additionalData(): array
+    {
+        return [];
+    }
+
     abstract public function toDatabase(): array;
 }

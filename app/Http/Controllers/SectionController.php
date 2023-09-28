@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUpdateSectionRequest;
 use App\Models\Section;
+use App\Notifications\Database\Section\SectionCreated;
+use App\Notifications\Database\Section\SectionDeleted;
+use App\Notifications\Database\Section\SectionUpdated;
+use App\Services\Notification\AdminNotifyService;
 use Illuminate\Http\Request;
 
 class SectionController extends Controller
 {
 
-    public function __construct()
+    public function __construct(private AdminNotifyService $adminNotifyService)
     {
         $this->authorizeResource(Section::class, 'section');
     }
@@ -34,7 +38,10 @@ class SectionController extends Controller
      */
     public function store(StoreUpdateSectionRequest $request)
     {
-        Section::create($request->validated() + ['user_id' => auth()->id()]);
+        $section = Section::create($request->validated() + ['user_id' => auth()->id()]);
+
+        $this->adminNotifyService->notifyAdmins(new SectionCreated($section, auth()->user()));
+
         return redirect()->route('sections.index');
     }
 
@@ -61,6 +68,8 @@ class SectionController extends Controller
     {
         $section->update($request->validated());
 
+        $this->adminNotifyService->notifyAdmins(new SectionUpdated($section, auth()->user()));
+
         return redirect()->route('sections.index');
     }
 
@@ -70,6 +79,9 @@ class SectionController extends Controller
     public function destroy(Section $section)
     {
         $section->delete();
+
+        $this->adminNotifyService->notifyAdmins(new SectionDeleted($section, auth()->user()));
+
         return redirect()->route('sections.index', status: 303);
     }
 }
