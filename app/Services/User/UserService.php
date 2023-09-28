@@ -5,13 +5,19 @@ namespace App\Services\User;
 use App\DTO\UserDTO;
 use App\Exceptions\Custom\UserNotFoundException;
 use App\Models\User;
+use App\Notifications\Database\User\UserCreated;
+use App\Notifications\Database\User\UserDeleted;
+use App\Notifications\Database\User\UserForceDeleted;
+use App\Notifications\Database\User\UserResetPassword;
+use App\Notifications\Database\User\UserUpdated;
 use App\Services\Mail\MailService;
+use App\Services\Notification\AdminNotifyService;
 use Illuminate\Support\Str;
 
 class UserService
 {
 
-    public function __construct(protected MailService $mailService)
+    public function __construct(protected MailService $mailService, protected AdminNotifyService $adminNotifyService)
     {
     }
     public function getAllWithPagination()
@@ -30,6 +36,8 @@ class UserService
 
         $this->mailService->sendWelcomeMailTo($user);
 
+
+        $this->adminNotifyService->notifyAdmins(new UserCreated($user, auth()->user()));
         return $user;
     }
 
@@ -50,6 +58,7 @@ class UserService
 
         $this->mailService->sendWelcomeMailTo($user);
 
+        $this->adminNotifyService->notifyAdmins(new UserResetPassword($user, auth()->user()));
         return true;
     }
 
@@ -59,16 +68,26 @@ class UserService
         if (!is_null($role))
             $user->syncRoles([$role]);
 
+        $this->adminNotifyService->notifyAdmins(new UserUpdated($user, auth()->user()));
+
         return true;
     }
 
     public function delete(User $user): bool
     {
-        return $user->delete();
+        $isDeleted = $user->delete();
+        if ($isDeleted)
+            $this->adminNotifyService->notifyAdmins(new UserDeleted($user, auth()->user()));
+
+        return $isDeleted;
     }
 
     public function forceDelete(User $user): bool
     {
-        return $user->forceDelete();
+        $isDeleted = $user->forceDelete();
+        if ($isDeleted)
+            $this->adminNotifyService->notifyAdmins(new UserForceDeleted($user, auth()->user()));
+
+        return $isDeleted;
     }
 }

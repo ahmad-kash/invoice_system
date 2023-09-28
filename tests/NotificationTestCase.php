@@ -52,7 +52,7 @@ abstract class NotificationTestCase extends BaseTestCase
     {
         $adminPermissions = [
             'create invoice', 'edit invoice', 'delete invoice', 'restore invoice', 'force delete invoice',
-            'create user', 'edit user', 'delete user', 'restore user', 'force delete user',
+            'create user', 'edit user', 'delete user', 'reset password', 'force delete user',
             'create section', 'edit section', 'delete section',
             'create product', 'edit product', 'delete product',
             'create role', 'edit role', 'delete role',
