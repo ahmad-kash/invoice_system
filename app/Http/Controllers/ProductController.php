@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUpdateProductRequest;
 use App\Models\Product;
 use App\Models\Section;
+use App\Notifications\Database\Product\ProductCreated;
+use App\Notifications\Database\Product\ProductDeleted;
+use App\Notifications\Database\Product\ProductUpdated;
+use App\Services\Notification\AdminNotifyService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
 
-    public function __construct()
+    public function __construct(private AdminNotifyService $adminNotifyService)
     {
         $this->authorizeResource(Product::class, 'product');
     }
@@ -35,7 +39,9 @@ class ProductController extends Controller
      */
     public function store(StoreUpdateProductRequest $request)
     {
-        Product::create($request->validated());
+        $product = Product::create($request->validated());
+
+        $this->adminNotifyService->notifyAdmins(new ProductCreated($product, auth()->user()));
 
         return redirect()->route('products.index');
     }
@@ -63,6 +69,9 @@ class ProductController extends Controller
     {
         $product->update($request->validated());
 
+        $this->adminNotifyService->notifyAdmins(new ProductUpdated($product, auth()->user()));
+
+
         return redirect()->route('products.index');
     }
 
@@ -72,6 +81,9 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
+
+        $this->adminNotifyService->notifyAdmins(new ProductDeleted($product, auth()->user()));
+
 
         return redirect()->route('products.index');
     }
