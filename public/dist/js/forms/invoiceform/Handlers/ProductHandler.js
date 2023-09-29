@@ -4,7 +4,7 @@ export default class ProductsHandler {
         this.selectListSection = document.querySelector('#section_id');
         this.selectListProduct = document.querySelector('#product_id');
         this.products = [];
-        this.selectedSectionId = null;
+        this.selectedSectionId = this.selectListSection.selectedOptions.length > 0 ? this.selectListSection.selectedOptions[0].value : null;
     }
 
     async execute() {

@@ -116,7 +116,7 @@
                 <div class="col">
                     <x-input-label for="total">الاجمالي شامل الضريبة</x-input-label>
                     <x-text-input type="text" class="form-control" id="total" name="total" readonly
-                        value="{{ old('total') ?? '' }}" :hasError="$errors->has('total')" />
+                        :hasError="$errors->has('total')">{{ old('total') ?? '' }}</x-text-input>
                     <x-input-error :message="$errors->first('total')"></x-input-error>
                 </div>
             </div>

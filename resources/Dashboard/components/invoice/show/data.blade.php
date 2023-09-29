@@ -5,7 +5,7 @@
                 <th scope="row">رقم الفاتورة</th>
                 <td>{{ $invoice->number }}</td>
                 <th scope="row">تاريخ الاصدار</th>
-                <td>{{ $invoice->create_date }}</td>
+                <td>{{ $invoice->payment_date }}</td>
                 <th scope="row">تاريخ الاستحقاق</th>
                 <td>{{ $invoice->due_date }}</td>
                 <th scope="row">القسم</th>
@@ -26,7 +26,7 @@
 
             <tr>
                 <th scope="row">نسبة الضريبة</th>
-                <td>{{ $invoice->VAT_rate }}</td>
+                <td>%{{ $invoice->VAT_rate }}</td>
                 <th scope="row">قيمة الضريبة</th>
                 <td>{{ $invoice->VAT_value }}</td>
                 <th scope="row">الاجمالي مع الضريبة</th>

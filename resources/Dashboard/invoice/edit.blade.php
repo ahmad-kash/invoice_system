@@ -83,8 +83,8 @@
                 <div class="col">
                     <x-input-label for="discount">الخصم</x-input-label>
                     <x-text-input type="text" id="discount" name="discount"
-                        value="{{ old('discount') ?? $invoice->discount }}" title="يرجي ادخال مبلغ الخصم "
-                        oninput="asFloat(this)" value=0 required :hasError="$errors->has('discount')" />
+                        value="{{ old('discount') ?? $invoice->discount }}" title="يرجي ادخال مبلغ الخصم " required
+                        :hasError="$errors->has('discount')" />
                     <x-input-error :message="$errors->first('discount')"></x-input-error>
                 </div>
 
@@ -121,7 +121,7 @@
                 <div class="col">
                     <x-input-label for="note">ملاحظات</x-input-label>
                     <x-textarea id="note" name="note" rows="3"
-                        value="{{ old('note') ?? $invoice->note }}" :hasError="$errors->has('note')"></x-textarea>
+                        :hasError="$errors->has('note')">{{ old('note') ?? $invoice->note }}</x-textarea>
                     <x-input-error :message="$errors->first('note')"></x-input-error>
                 </div>
             </div><br>
