@@ -84,44 +84,10 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Invoice $invoice)
     {
         $this->invoiceService->delete($invoice);
 
         return redirect()->route('invoices.index');
-    }
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function forceDestroy(Invoice $invoice)
-    {
-        $this->invoiceService->forceDelete($invoice);
-
-        return redirect()->route('invoices.index');
-    }
-
-    public function restore(Invoice $invoice)
-    {
-        $this->invoiceService->restore($invoice);
-
-        return redirect()->route('invoices.index');
-    }
-
-    protected function resourceAbilityMap()
-    {
-        return [
-            'index' => 'viewAny',
-            'show' => 'view',
-            'create' => 'create',
-            'store' => 'create',
-            'edit' => 'update',
-            'update' => 'update',
-            'destroy' => 'delete',
-            'forceDestroy' => 'forceDelete',
-            'restore' => 'restore',
-        ];
     }
 }

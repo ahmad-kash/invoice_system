@@ -51,7 +51,7 @@ class InvoicePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Invoice $invoice): bool
+    public function restore(User $user, ?Invoice $invoice = null): bool
     {
         return $user->hasPermissionTo('restore invoice');
     }

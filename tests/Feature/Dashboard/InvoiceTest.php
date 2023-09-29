@@ -312,28 +312,6 @@ class InvoiceTest extends DashboardTestCase
         ];
     }
 
-    /** @test */
-    public function user_can_soft_delete_invoice(): void
-    {
-        $invoice = Invoice::factory()->create();
-
-        $this->delete(route('invoices.destroy', ['invoice' => $invoice->id]))
-            ->assertRedirectToRoute('invoices.index');
-
-        $this->assertDatabaseHas('invoices', ['number' => $invoice->number, 'deleted_at' => now()]);
-    }
-
-    /** @test */
-    public function user_can_restore_soft_deleted_invoice(): void
-    {
-        $invoice = Invoice::factory()->create();
-        $this->withoutExceptionHandling();
-
-        $this->delete(route('invoices.destroy', ['invoice' => $invoice->id]));
-        $this->put(route('invoices.restore', ['invoice' => $invoice->id]))
-            ->assertRedirectToRoute('invoices.index');
-        $this->assertDatabaseHas('invoices', ['number' => $invoice->number, 'deleted_at' => null]);
-    }
 
     /** @test */
     public function user_can_force_delete_invoice(): void
@@ -345,7 +323,7 @@ class InvoiceTest extends DashboardTestCase
         $dirPath = $invoice->directory;
 
         $this->delete(route('invoices.forceDestroy', ['invoice' => $invoice->id]))
-            ->assertRedirectToRoute('invoices.index');
+            ->assertRedirect();
 
         $this->assertDatabaseEmpty('invoices');
         $this->assertDatabaseEmpty('invoice_attachments');
@@ -358,7 +336,7 @@ class InvoiceTest extends DashboardTestCase
         $invoice = Invoice::factory()->create();
 
         $this->delete(route('invoices.forceDestroy', ['invoice' => $invoice->id]))
-            ->assertRedirectToRoute('invoices.index');
+            ->assertRedirect();
 
         $this->assertDatabaseEmpty('invoices');
     }

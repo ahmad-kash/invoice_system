@@ -92,4 +92,12 @@ class InvoicePermissionTest extends TestCase
 
         $this->spyUser->shouldHaveReceived('hasPermissionTo')->with('restore invoice')->once();
     }
+
+    /** @test */
+    public function user_is_asked_if_he_has_restore_invoice_permission_on_route_invoices_archive_index(): void
+    {
+        $this->get(route('invoices.archive.index'));
+
+        $this->spyUser->shouldHaveReceived('hasPermissionTo')->with('restore invoice')->once();
+    }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InvoiceArchiveController;
 use App\Http\Controllers\InvoiceAttachmentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoicePaymentController;
@@ -50,9 +51,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('products', ProductController::class);
     Route::get('sections/{section}/products', [ProductController::class, 'getSectionProducts'])->name('sections.products');
 
+    Route::get('invoices/restore', [InvoiceArchiveController::class, 'index'])->name('invoices.archive.index');
+    Route::put('invoices/restore/{invoice}', [InvoiceArchiveController::class, 'update'])->withTrashed()->name('invoices.restore');
+    Route::delete('invoices/forceDelete/{invoice}', [InvoiceArchiveController::class, 'destroy'])->withTrashed()->name('invoices.forceDestroy');
+
     Route::resource('invoices', InvoiceController::class);
-    Route::delete('invoices/forceDelete/{invoice}', [InvoiceController::class, 'forceDestroy'])->name('invoices.forceDestroy');
-    Route::put('invoices/restore/{invoice}', [InvoiceController::class, 'restore'])->withTrashed()->name('invoices.restore');
+
 
     Route::get('attachments/{attachment}', [InvoiceAttachmentController::class, 'show'])->name('invoices.attachments.show');
     Route::get('attachments/{attachment}/download', [InvoiceAttachmentController::class, 'download'])->name('invoices.attachments.download');

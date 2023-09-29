@@ -1,3 +1,4 @@
+@props(['url'])
 <div class="modal fade" id="filters" tabindex="-1" role="dialog" aria-labelledby="filtersLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -8,7 +9,7 @@
                 </button>
             </div>
 
-            <form id="search" action="{{ route('invoices.index') }}">
+            <form id="search" action="{{ $url }}">
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">

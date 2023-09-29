@@ -22,9 +22,13 @@ class InvoiceService
     ) {
     }
 
-    public function getAllWithFiltering(array $filters)
+    public function getAllWithFiltering(array $filters, bool $onlyTrashed = false)
     {
-        return Invoice::with(['product', 'section'])->filter($filters)->paginate(5);
+        $query = Invoice::with(['product', 'section'])->filter($filters);
+        if ($onlyTrashed)
+            $query->onlyTrashed();
+
+        return $query->paginate(5);
     }
     public function store(InvoiceDTO $invoiceDTO, Null|array|Collection|SplFileInfo $files = null): Invoice
     {
