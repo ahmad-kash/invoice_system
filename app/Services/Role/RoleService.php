@@ -29,7 +29,7 @@ class RoleService
 
     public function getAllRoleWithPaginate(): Paginator
     {
-        return Role::paginate(5);
+        return Role::with('permissions')->paginate(5);
     }
 
     public function create(string $roleName, ?array $permissions): Role

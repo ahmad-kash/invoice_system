@@ -59,6 +59,7 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
+        $invoice->load('paymentDetails.user', 'attachments.user');
         return view('invoice.show', ['invoice' => $invoice]);
     }
 
