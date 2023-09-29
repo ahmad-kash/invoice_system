@@ -351,4 +351,15 @@ class InvoiceTest extends DashboardTestCase
         $this->assertDatabaseEmpty('invoice_attachments');
         $this->assertDirectoryDoesNotExist($dirPath);
     }
+
+    /** @test */
+    public function user_can_force_delete_invoice_that_does_not_has_any_attachment(): void
+    {
+        $invoice = Invoice::factory()->create();
+
+        $this->delete(route('invoices.forceDestroy', ['invoice' => $invoice->id]))
+            ->assertRedirectToRoute('invoices.index');
+
+        $this->assertDatabaseEmpty('invoices');
+    }
 }

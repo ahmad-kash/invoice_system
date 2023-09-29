@@ -68,7 +68,8 @@ class InvoiceService
     public function forceDelete(Invoice $invoice): bool
     {
         //here we should delete all the invoice attachments for this invoice
-        $this->invoiceAttachment->deleteAll($invoice);
+        if ($invoice->attachments()->exists())
+            $this->invoiceAttachment->deleteAll($invoice);
 
         $isDeleted = $invoice->forceDelete();
         if ($isDeleted)
