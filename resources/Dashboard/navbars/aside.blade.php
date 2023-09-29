@@ -64,6 +64,12 @@
                                         <p>الفواتير</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('users.archive.index') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>المستخدمين</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 

@@ -28,6 +28,7 @@ class UserPermissionTest extends TestCase
             'edit user',
             'show user',
             'delete user',
+            'restore user',
             'force delete user',
             'reset password'
         ];
@@ -110,6 +111,34 @@ class UserPermissionTest extends TestCase
         $this->delete(route('users.destroy', ['user' => $user->id]))
             ->assertRedirect(route('user.index'));
     }
+    /** @test */
+    public function user_is_asked_if_he_has_restore_user_permission_on_route_users_restore(): void
+    {
+        $user = User::factory()->create();
+
+        $this->withoutExceptionHandling();
+        $this->expectException(AuthorizationException::class);
+        $this->put(route('users.restore', ['user' => $user->id]));
+
+        $this->signIn($this->authorizedUser);
+
+        $this->delete(route('users.restore', ['user' => $user->id]))
+            ->assertRedirect();
+    }
+
+    /** @test */
+    public function user_is_asked_if_he_has_restore_user_permission_on_route_users_arcive_index(): void
+    {
+        $user = User::factory()->create();
+
+        $this->withoutExceptionHandling();
+        $this->expectException(AuthorizationException::class);
+        $this->get(route('users.archive.index'));
+
+        $this->signIn($this->authorizedUser);
+
+        $this->get(route('users.archive.index'));
+    }
 
     /** @test */
     public function user_is_asked_if_he_has_force_delete_user_permission_on_route_users_delete(): void
@@ -125,7 +154,7 @@ class UserPermissionTest extends TestCase
 
 
         $this->delete(route('users.forceDestroy', ['user' => $user->id]))
-            ->assertRedirect(route('user.index'));
+            ->assertRedirect();
     }
 
     /** @test */

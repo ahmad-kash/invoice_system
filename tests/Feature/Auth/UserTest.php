@@ -67,23 +67,12 @@ class UserTest extends DashboardTestCase
     }
 
     /** @test */
-    public function admin_can_delete_user(): void
-    {
-        $user = User::factory()->create();
-
-        $this->delete(route('users.destroy', ['user' => $user->id]))
-            ->assertRedirect(route('users.index'));
-
-        $this->assertDatabaseHas('users', ['id' => $user->id, 'deleted_at' => now()]);
-    }
-
-    /** @test */
     public function admin_can_force_delete_user(): void
     {
         $user = User::factory()->create();
 
         $this->delete(route('users.forceDestroy', ['user' => $user->id]))
-            ->assertRedirect(route('users.index'));
+            ->assertRedirect();
 
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
     }

@@ -11,6 +11,7 @@ use App\Http\Controllers\InvoicePaymentController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\UserArchiveController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,8 +67,12 @@ Route::middleware('auth')->group(function () {
     Route::get('invoices/{invoice}/payments', [InvoicePaymentController::class, 'create'])->name('invoices.payments.create');
     Route::post('invoices/{invoice}/payments', [InvoicePaymentController::class, 'store'])->name('invoices.payments.store');
 
+
+    Route::get('users/restore', [UserArchiveController::class, 'index'])->name('users.archive.index');
+    Route::put('users/restore/{user}', [UserArchiveController::class, 'update'])->withTrashed()->name('users.restore');
+    Route::delete('users/forceDelete/{user}', [UserArchiveController::class, 'destroy'])->withTrashed()->name('users.forceDestroy');
+
     Route::resource('users', UserController::class);
-    Route::delete('users/forceDelete/{user}', [UserController::class, 'forceDestroy'])->name('users.forceDestroy');
     Route::put('reset/{user}', [ResetPasswordController::class, 'update'])->name('password.reset.update');
 
     Route::resource('roles', RoleController::class);

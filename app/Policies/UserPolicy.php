@@ -50,7 +50,7 @@ class UserPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $admin, User $user): bool
+    public function restore(User $admin, ?User $user = null): bool
     {
         return $admin->hasPermissionTo('restore user');
     }

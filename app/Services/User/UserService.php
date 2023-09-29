@@ -9,6 +9,7 @@ use App\Notifications\Database\User\UserCreated;
 use App\Notifications\Database\User\UserDeleted;
 use App\Notifications\Database\User\UserForceDeleted;
 use App\Notifications\Database\User\UserResetPassword;
+use App\Notifications\Database\User\UserRestored;
 use App\Notifications\Database\User\UserUpdated;
 use App\Services\Mail\MailService;
 use App\Services\Notification\AdminNotifyService;
@@ -20,8 +21,11 @@ class UserService
     public function __construct(protected MailService $mailService, protected AdminNotifyService $adminNotifyService)
     {
     }
-    public function getAllWithPagination()
+    public function getAllWithPagination(bool $onlyTrashed = false)
     {
+        if ($onlyTrashed)
+            return User::onlyTrashed()->paginate(5);
+
         return User::paginate(5);
     }
 
@@ -80,6 +84,14 @@ class UserService
             $this->adminNotifyService->notifyAdmins(new UserDeleted($user, auth()->user()));
 
         return $isDeleted;
+    }
+    public function restore(User $user): bool
+    {
+        $isRestore = $user->restore();
+        if ($isRestore)
+            $this->adminNotifyService->notifyAdmins(new UserRestored($user, auth()->user()));
+
+        return $isRestore;
     }
 
     public function forceDelete(User $user): bool

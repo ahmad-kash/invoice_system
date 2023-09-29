@@ -91,11 +91,4 @@ class UserController extends Controller
 
         return redirect()->route('users.index');
     }
-
-    public function forceDestroy(User $user)
-    {
-        $this->userService->forceDelete($user);
-
-        return redirect()->route('users.index');
-    }
 }
