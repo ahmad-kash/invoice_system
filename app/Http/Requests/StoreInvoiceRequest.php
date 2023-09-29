@@ -33,7 +33,7 @@ class StoreInvoiceRequest extends FormRequest
             'section_id' => ['required', 'exists:sections,id'],
             'collection_amount' => ['required', 'numeric', 'gt:0', 'gt:commission_amount'],
             'commission_amount' => ['required', 'numeric', 'gt:0'],
-            'discount' => ['required', 'numeric', 'gt:0'],
+            'discount' => ['required', 'numeric', 'gte:0'],
             'VAT_rate' => ['required', 'string', 'regex:/%\d+/'],
             'note' => ['sometimes', 'nullable', 'string'],
             'files' => ['sometimes'],
