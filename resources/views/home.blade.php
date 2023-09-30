@@ -1,10 +1,7 @@
 <x-dashboard::layouts.app>
-    <x-slot:title>{{ __('Dashboard') }}</x-slot:title>
+    <x-slot:title>لوحة التحكم </x-slot:title>
     <x-slot:breadcrumb>
-        <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard v1</li>
-        </ol>
+        {{ '' }}
     </x-slot:breadcrumb>
 
     <div class="container-fluid">
