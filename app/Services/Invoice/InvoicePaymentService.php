@@ -77,7 +77,7 @@ class InvoicePaymentService
     }
     private function amountsIsSmallerThanTotal(Invoice $invoice): bool
     {
-        return $invoice->total >= $this->allPayments;
+        return round($invoice->total, 2) > round($this->allPayments, 2);
     }
 
     private function changeInvoiceState(Invoice $invoice): bool
