@@ -28,4 +28,14 @@ class DashboardTest extends TestCase
                 'partiallyPaidInvoicesSum'
             ]);
     }
+
+    /** @test */
+    public function non_admin_user_can_not_see_notification_icon(): void
+    {
+        $this->signIn();
+        $this->get(route('home'))
+            ->assertDontSee('<a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                <i class="fa fa-bell"></i>
+                <span class="badge badge-warning navbar-badge">', false);
+    }
 }

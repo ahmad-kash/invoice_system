@@ -24,13 +24,6 @@ class InvoiceAttachmentController extends Controller
     {
         $this->authorizeResource(InvoiceAttachment::class, 'attachment');
     }
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -38,7 +31,7 @@ class InvoiceAttachmentController extends Controller
     public function store(Request $request, Invoice $invoice)
     {
         $this->attachmentService->store($invoice, $request->file('file'));
-        return redirect()->route('invoices.show', ['invoice' => $invoice->id]);
+        return redirect()->route('invoices.show', ['invoice' => $invoice->id])->with('successMessage', 'تم اضافة الملف بنجاح');
     }
 
     /**
@@ -63,6 +56,7 @@ class InvoiceAttachmentController extends Controller
     public function destroy(InvoiceAttachment $attachment)
     {
         if ($this->attachmentService->delete($attachment))
-            return redirect()->route('invoices.show', ['invoice' => $attachment->invoice->id]);
+            return redirect()->route('invoices.show', ['invoice' => $attachment->invoice->id])->with('successMessage', 'تم حذف الملف بنجاح');
+        return back()->with('errorMessage', 'حصل مشكلة و لم يتم حذف الملف');
     }
 }

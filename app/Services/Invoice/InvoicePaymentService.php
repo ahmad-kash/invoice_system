@@ -3,13 +3,12 @@
 namespace App\Services\Invoice;
 
 use App\Enums\InvoiceState;
+use App\Exceptions\Custom\ArgumentOutOfRangeException;
 use App\Models\Invoice;
 use App\Models\PaymentDetail;
 use App\Notifications\Database\Invoice\InvoicePaid;
 use App\Notifications\Database\Invoice\InvoicePaidPartially;
 use App\Services\Notification\AdminNotifyService;
-use Illuminate\Testing\Exceptions\InvalidArgumentException;
-use Nette\ArgumentOutOfRangeException;
 
 class InvoicePaymentService
 {
@@ -29,10 +28,10 @@ class InvoicePaymentService
     {
         $this->setAllPayments($invoice, $amount);
         if ($amount ==  0)
-            throw new InvalidArgumentException("the amount must be bigger then 0");
+            throw new ArgumentOutOfRangeException("القيمة يجب ان تكون اكبر من 0");
 
         if (!$this->amountsIsSmallerThanTotal($invoice, $amount))
-            throw new ArgumentOutOfRangeException("the previous payment + amount ={$this->allPayments} must be less than invoice total {$invoice->total}");
+            throw new ArgumentOutOfRangeException("القيمة المدفوعة سابقا + القيمة الحالية ={$this->allPayments}, يجب ان تكون اقل او تساوي القيمة الكلية للفاتورة {$invoice->total}");
 
         return $this->makeAPayment($invoice, $amount, $note);
     }

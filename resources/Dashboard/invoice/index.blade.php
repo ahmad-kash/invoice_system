@@ -12,7 +12,9 @@
     <x-table>
         <x-slot:tableTop>
             <div class="flex">
-                <a class="btn btn-primary" href="{{ route('invoices.create') }}">اضافة فاتورة</a>
+                @can('create invoice')
+                    <a class="btn btn-primary" href="{{ route('invoices.create') }}">اضافة فاتورة</a>
+                @endcan
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filters">بحث</button>
             </div>
             <x-invoice.filter :url="route('invoices.index')"></x-invoice.filter>
@@ -30,7 +32,9 @@
             <th>الاجمالي</th>
             <th>الحالة</th>
             <th>ملاحظات</th>
-            <th>العمليات</th>
+            @canany(['edit invoice', 'delete invoice', 'force delete invoice', 'make-a-payment'])
+                <th>العمليات</th>
+            @endcan
         </x-slot:tableHeader>
         <x-slot:tableBody>
             @forelse ($invoices as $invoice)
@@ -54,55 +58,57 @@
                     </td>
 
                     <td>{{ $invoice->note }}</td>
-                    <td>
-                        <div class="dropdown">
-                            <button aria-expanded="false" aria-haspopup="true"
-                                class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
-                                type="button">العمليات</button>
-                            <div class="dropdown-menu tx-13">
-                                @can('edit invoice')
-                                    <a class="dropdown-item"
-                                        href="{{ route('invoices.edit', ['invoice' => $invoice->id]) }} ">
-                                        <i class="fas fa-edit"></i> تعديل
-                                        الفاتورة</a>
-                                @endcan
+                    @canany(['edit invoice', 'delete invoice', 'force delete invoice', 'make-a-payment'])
+                        <td>
+                            <div class="dropdown">
+                                <button aria-expanded="false" aria-haspopup="true"
+                                    class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
+                                    type="button">العمليات</button>
+                                <div class="dropdown-menu tx-13">
+                                    @can('edit invoice')
+                                        <a class="dropdown-item"
+                                            href="{{ route('invoices.edit', ['invoice' => $invoice->id]) }} ">
+                                            <i class="fas fa-edit"></i> تعديل
+                                            الفاتورة</a>
+                                    @endcan
 
-                                @can('delete invoice')
-                                    <a class="dropdown-item archive" href="#" data-id="{{ $invoice->id }}"
-                                        data-number="{{ $invoice->number }}" data-toggle="modal"
-                                        data-target="#archive_invoice"><i class="text-warning fas fa-exchange-alt"></i>
-                                        نقل
-                                        الى
-                                        الارشيف</a>
-                                    <form class="d-none" method="POST"
-                                        action="{{ route('invoices.destroy', $invoice->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                        <button id="archive-{{ $invoice->id }}">delete</button>
-                                    </form>
-                                @endcan
+                                    @can('delete invoice')
+                                        <a class="dropdown-item archive" href="#" data-id="{{ $invoice->id }}"
+                                            data-number="{{ $invoice->number }}" data-toggle="modal"
+                                            data-target="#archive_invoice"><i class="text-warning fas fa-exchange-alt"></i>
+                                            نقل
+                                            الى
+                                            الارشيف</a>
+                                        <form class="d-none" method="POST"
+                                            action="{{ route('invoices.destroy', $invoice->id) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button id="archive-{{ $invoice->id }}">delete</button>
+                                        </form>
+                                    @endcan
 
-                                @can('make-a-payment')
-                                    <a class="dropdown-item"
-                                        href="{{ route('invoices.payments.create', ['invoice' => $invoice->id]) }}">
-                                        <i class=" text-success fas fa-money-bill"></i>
-                                        دفع الفاتورة</a>
-                                @endcan
-                                @can('force delete invoice')
-                                    <a class="dropdown-item delete" href="#" data-id="{{ $invoice->id }}"
-                                        data-number="{{ $invoice->number }}" data-toggle="modal"
-                                        data-target="#delete_invoice"><i class="text-danger fas fa-trash-alt"></i> حذف</a>
-                                    <form class="d-none" method="POST"
-                                        action="{{ route('invoices.forceDestroy', $invoice->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                        <button id="delete-{{ $invoice->id }}">delete</button>
-                                    </form>
-                                @endcan
+                                    @can('make-a-payment')
+                                        <a class="dropdown-item"
+                                            href="{{ route('invoices.payments.create', ['invoice' => $invoice->id]) }}">
+                                            <i class=" text-success fas fa-money-bill"></i>
+                                            دفع الفاتورة</a>
+                                    @endcan
+                                    @can('force delete invoice')
+                                        <a class="dropdown-item delete" href="#" data-id="{{ $invoice->id }}"
+                                            data-number="{{ $invoice->number }}" data-toggle="modal"
+                                            data-target="#delete_invoice"><i class="text-danger fas fa-trash-alt"></i> حذف</a>
+                                        <form class="d-none" method="POST"
+                                            action="{{ route('invoices.forceDestroy', $invoice->id) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button id="delete-{{ $invoice->id }}">delete</button>
+                                        </form>
+                                    @endcan
+                                </div>
                             </div>
-                        </div>
 
-                    </td>
+                        </td>
+                    @endcan
                 </tr>
             @empty
                 <p class="text-center py-2 font-weight-bold">
@@ -120,7 +126,6 @@
     </x-table>
 
     @push('bodyScripts')
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             const archiveElements = document.querySelectorAll('.archive');
 

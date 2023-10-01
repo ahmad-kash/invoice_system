@@ -28,14 +28,14 @@ class UserArchiveController extends Controller
     {
         $this->userService->restore($user);
 
-        return redirect()->back();
+        return redirect()->back()->with('successMessage', 'تم استعادة المستخدم بنجاح');
     }
 
     public function destroy(User $user)
     {
         $this->userService->forceDelete($user);
 
-        return redirect()->back();
+        return redirect()->back()->with('successMessage', 'تم حذف المستخدم حذف نهائي بنجاح');
     }
 
     protected function resourceAbilityMap()

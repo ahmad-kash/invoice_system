@@ -5,8 +5,10 @@
         <p>{{ $title }}</p>
 
     </div>
-    <div class="icon">
-        {!! $icon ?? '' !!}
-    </div>
-    <a href="{{ $link ?? '#' }}" class="small-box-footer">مزيد من التفاصيل <i class="fas fa-arrow-circle-right"></i></a>
+    @can('show invoice')
+        <div class="icon">
+            {!! $icon ?? '' !!}
+        </div>
+        <a href="{{ $link ?? '#' }}" class="small-box-footer">مزيد من التفاصيل <i class="fas fa-arrow-circle-right"></i></a>
+    @endcan
 </div>

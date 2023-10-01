@@ -16,7 +16,9 @@
             <th class="wd-20p border-bottom-0">البريد الالكتروني</th>
             <th class="wd-15p border-bottom-0">حالة المستخدم</th>
             <th class="wd-15p border-bottom-0">نوع المستخدم</th>
-            <th class="wd-10p border-bottom-0">العمليات</th>
+            @canany(['restore user', 'force delete user'])
+                <th class="wd-10p border-bottom-0">العمليات</th>
+            @endcan
         </x-slot:tableHeader>
         <x-slot:tableBody>
             @forelse ($users as $key => $user)
@@ -35,43 +37,41 @@
                         @endif
                     </td>
 
-                    <td>
-                        <div class="dropdown">
-                            <button aria-expanded="false" aria-haspopup="true"
-                                class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
-                                type="button">العمليات</button>
-                            <div class="dropdown-menu tx-13">
+                    @canany(['restore user', 'force delete user'])
+                        <td>
+                            <div class="dropdown">
+                                <button aria-expanded="false" aria-haspopup="true"
+                                    class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
+                                    type="button">العمليات</button>
+                                <div class="dropdown-menu tx-13">
 
-                                @can('restore user')
-                                    <a class="dropdown-item restore" data-effect="effect-scale"
-                                        data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-toggle="modal"
-                                        href="#" title="حذف"><i class="text-warning fas fa-trash-restore"></i>
-                                        استعادة</a>
-                                    <form class="d-none" method="POST" action="{{ route('users.restore', $user->id) }}">
-                                        @csrf
-                                        @method('put')
-                                        <button id="restore-{{ $user->id }}">restore</button>
-                                    </form>
-                                @endcan
-                                @can('force delete user')
-                                    <a class="dropdown-item force-delete" data-effect="effect-scale"
-                                        data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-toggle="modal"
-                                        href="#" title="حذف نهائي"><i class="text-danger fas fa-trash-alt"></i> حذف
-                                        نهائي</a>
-                                    <form class="d-none" method="POST"
-                                        action="{{ route('users.forceDestroy', $user->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                        <button id="force-delete-{{ $user->id }}">delete</button>
-                                    </form>
-                                @endcan
+                                    @can('restore user')
+                                        <a class="dropdown-item restore" data-effect="effect-scale"
+                                            data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-toggle="modal"
+                                            href="#" title="حذف"><i class="text-warning fas fa-trash-restore"></i>
+                                            استعادة</a>
+                                        <form class="d-none" method="POST" action="{{ route('users.restore', $user->id) }}">
+                                            @csrf
+                                            @method('put')
+                                            <button id="restore-{{ $user->id }}">restore</button>
+                                        </form>
+                                    @endcan
+                                    @can('force delete user')
+                                        <a class="dropdown-item force-delete" data-effect="effect-scale"
+                                            data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-toggle="modal"
+                                            href="#" title="حذف نهائي"><i class="text-danger fas fa-trash-alt"></i> حذف
+                                            نهائي</a>
+                                        <form class="d-none" method="POST"
+                                            action="{{ route('users.forceDestroy', $user->id) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button id="force-delete-{{ $user->id }}">delete</button>
+                                        </form>
+                                    @endcan
+                                </div>
                             </div>
-                        </div>
-
-                    </td>
-                    <td>
-
-                    </td>
+                        </td>
+                    @endcan
                 </tr>
             @empty
                 <p class="text-center py-2 font-weight-bold">
@@ -89,7 +89,6 @@
     </x-table>
 
     @push('bodyScripts')
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             const restoreElements = document.querySelectorAll('.restore');
             const forceDeleteElements = document.querySelectorAll('.force-delete');

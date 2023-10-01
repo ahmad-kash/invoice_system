@@ -53,7 +53,7 @@
                                 </a>
                             </li>
                         @endcan
-                        @can(['restore user', 'restore invoice'])
+                        @canany(['restore user', 'restore invoice'])
                             <li @class([
                                 'nav-item has-treeview',
                                 'menu-open' =>

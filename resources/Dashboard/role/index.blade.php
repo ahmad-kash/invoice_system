@@ -11,13 +11,17 @@
 
     <x-table>
         <x-slot:tableTop>
-            <a class="btn btn-primary" href="{{ route('roles.create') }}">اضافة دور</a>
+            @can('create role')
+                <a class="btn btn-primary" href="{{ route('roles.create') }}">اضافة دور</a>
+            @endcan
         </x-slot:tableTop>
         <x-slot:tableHeader>
             <th class="wd-10p border-bottom-0">#</th>
             <th class="wd-15p border-bottom-0">اسم الدور</th>
             <th class="wd-15p border-bottom-0">الاذونات</th>
-            <th class="wd-10p border-bottom-0">العمليات</th>
+            @canany(['edit role', 'delete role'])
+                <th class="wd-10p border-bottom-0">العمليات</th>
+            @endcan
         </x-slot:tableHeader>
         <x-slot:tableBody>
             @foreach ($roles as $key => $role)
@@ -31,33 +35,32 @@
                             @endforeach
                         @endif
                     </td>
-                    <td>
-                        <div class="dropdown">
-                            <button aria-expanded="false" aria-haspopup="true"
-                                class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
-                                type="button">العمليات</button>
-                            <div class="dropdown-menu tx-13">
-                                @can('edit role')
-                                    <a href="{{ route('roles.edit', $role->id) }}" class="dropdown-item" title="تعديل"><i
-                                            class="fas fa-edit"></i> تعديل</a>
-                                @endcan
-                                @can('delete role')
-                                    <a class="dropdown-item delete" data-effect="effect-scale" data-id="{{ $role->id }}"
-                                        data-name="{{ $role->name }}" data-toggle="modal" href="#" title="حذف"><i
-                                            class="text-warning fas fa-trash-alt"></i> حذف</a>
-                                    <form class="d-none" method="POST" action="{{ route('roles.destroy', $role->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                        <button id="delete-{{ $role->id }}">delete</button>
-                                    </form>
-                                @endcan
+                    @canany(['edit role', 'delete role'])
+                        <td>
+                            <div class="dropdown">
+                                <button aria-expanded="false" aria-haspopup="true"
+                                    class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
+                                    type="button">العمليات</button>
+                                <div class="dropdown-menu tx-13">
+                                    @can('edit role')
+                                        <a href="{{ route('roles.edit', $role->id) }}" class="dropdown-item" title="تعديل"><i
+                                                class="fas fa-edit"></i> تعديل</a>
+                                    @endcan
+                                    @can('delete role')
+                                        <a class="dropdown-item delete" data-effect="effect-scale" data-id="{{ $role->id }}"
+                                            data-name="{{ $role->name }}" data-toggle="modal" href="#" title="حذف"><i
+                                                class="text-warning fas fa-trash-alt"></i> حذف</a>
+                                        <form class="d-none" method="POST" action="{{ route('roles.destroy', $role->id) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button id="delete-{{ $role->id }}">delete</button>
+                                        </form>
+                                    @endcan
+                                </div>
                             </div>
-                        </div>
 
-                    </td>
-                    <td>
-
-                    </td>
+                        </td>
+                    @endcan
                 </tr>
             @endforeach
         </x-slot:tableBody>
@@ -71,7 +74,6 @@
     </x-table>
 
     @push('bodyScripts')
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             const deleteElements = document.querySelectorAll('.delete');
 

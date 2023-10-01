@@ -11,14 +11,18 @@
 
     <x-table>
         <x-slot:tableTop>
-            <a class="btn btn-primary" href="{{ route('products.create') }}">اضافة منتج</a>
+            @can('create product')
+                <a class="btn btn-primary" href="{{ route('products.create') }}">اضافة منتج</a>
+            @endcan
         </x-slot:tableTop>
         <x-slot:tableHeader>
             <th style="width: 10px">#</th>
             <th>الاسم</th>
             <th>الوصف</th>
             <th>القسم</th>
-            <th></th>
+            @canany(['edit product', 'delete product'])
+                <th>العمليات</th>
+            @endcan
         </x-slot:tableHeader>
         <x-slot:tableBody>
             @forelse ($products as $product)
@@ -29,25 +33,26 @@
                         <div class="d-block text-truncate">{{ $product->description }}</div>
                     </td>
                     <td>{{ $product->sectionName() }}</td>
-                    <td>
+                    @canany(['edit product', 'delete product'])
+                        <td>
 
-                        <div class="felx">
-                            @can('edit product')
-                                <a href="{{ route('products.edit', ['product' => $product->id]) }}"
-                                    class="btn btn-secondary text-white">تعديل</a>
-                            @endcan
-                            @can('delete product')
-                                <button class="btn btn-danger text-white" data-name="{{ $product->name }}"
-                                    data-id="{{ $product->id }}">حذف</button>
-                                <form class="d-none" method="POST" action="{{ route('products.destroy', $product->id) }}">
-                                    @csrf
-                                    @method('delete')
-                                    <button id="delete-{{ $product->id }}">delete</button>
-                                </form>
-                            @endcan
-
-                        </div>
-                    </td>
+                            <div class="felx">
+                                @can('edit product')
+                                    <a href="{{ route('products.edit', ['product' => $product->id]) }}"
+                                        class="btn btn-secondary text-white">تعديل</a>
+                                @endcan
+                                @can('delete product')
+                                    <button class="btn btn-danger text-white" data-name="{{ $product->name }}"
+                                        data-id="{{ $product->id }}">حذف</button>
+                                    <form class="d-none" method="POST" action="{{ route('products.destroy', $product->id) }}">
+                                        @csrf
+                                        @method('delete')
+                                        <button id="delete-{{ $product->id }}">delete</button>
+                                    </form>
+                                @endcan
+                            </div>
+                        </td>
+                    @endcan
                 </tr>
             @empty
                 <p class="text-center py-2 font-weight-bold">
@@ -65,7 +70,6 @@
     </x-table>
 
     @push('bodyScripts')
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             const elements = document.querySelectorAll('.btn-danger');
             console.log("{{ route('products.index') }}");

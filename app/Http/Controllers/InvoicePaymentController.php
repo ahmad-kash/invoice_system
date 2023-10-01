@@ -41,6 +41,6 @@ class InvoicePaymentController extends Controller
 
         $this->invoicePaymentService->pay($invoice, $request->input('amount'), $request->input('note'));
 
-        return redirect()->route('invoices.show', ['invoice' => $invoice->id]);
+        return redirect()->route('invoices.show', ['invoice' => $invoice->id])->with('successMessage', 'تمت عملية الدفع بنجاح');
     }
 }

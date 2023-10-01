@@ -40,7 +40,7 @@ class RoleController extends Controller
     {
         $this->roleService->create($request->input('name'), $request->input('permissions'));
 
-        return redirect()->route('roles.index');
+        return redirect()->route('roles.index')->with('successMessage', 'تم اضافة الدور بنجاح');
     }
 
     /**
@@ -66,7 +66,7 @@ class RoleController extends Controller
     {
         $this->roleService->update($role, $request->input('name'), $request->input('permissions'));
 
-        return redirect()->route('roles.index');
+        return redirect()->route('roles.index')->with('successMessage', 'تم تعديل الدور بنجاح');
     }
 
     /**
@@ -76,6 +76,6 @@ class RoleController extends Controller
     {
         $this->roleService->delete($role);
 
-        return redirect()->route('roles.index');
+        return redirect()->route('roles.index')->with('successMessage', 'تم حذف الدور بنجاح');
     }
 }

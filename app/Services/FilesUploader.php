@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
+use App\Exceptions\Custom\DirectoryNotFoundException;
+use App\Exceptions\Custom\FileNotFoundException;
+use App\Exceptions\Custom\InvalidFileException;
 use App\Services\Interfaces\FilesUploaderInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
-use InvalidArgumentException;
 use SplFileInfo;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Nette\DirectoryNotFoundException;
 
 class FilesUploader implements FilesUploaderInterface
 {
@@ -23,7 +23,7 @@ class FilesUploader implements FilesUploaderInterface
 
         foreach ($files as $file) {
             if (!$this->isValidFile($file))
-                throw new InvalidArgumentException('The data should be a valid file');
+                throw new InvalidFileException('البيانات يجب ان تكون ملف صالح');
         }
         return $files;
     }
@@ -36,7 +36,7 @@ class FilesUploader implements FilesUploaderInterface
     private function throwExceptionIfFileNotFound($path)
     {
         if (Storage::missing($path))
-            throw new FileNotFoundException("File does not exist at path {$path}.");
+            throw new FileNotFoundException("الملف غير موجود في  {$path}.");
     }
 
     public function upload(string $dirPath, Null|array|Collection|SplFileInfo $files = null): array
@@ -80,7 +80,7 @@ class FilesUploader implements FilesUploaderInterface
     public function deleteDirectory(string $path): bool
     {
         if (!Storage::directoryExists($path))
-            throw new DirectoryNotFoundException("Directory not Found in path {$path}.");
+            throw new DirectoryNotFoundException("المجلد {$path} غير موجود.");
 
         return Storage::deleteDirectory($path);
     }
