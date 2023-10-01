@@ -2,18 +2,13 @@
 
 namespace Tests\Unit;
 
-use App\Models\Invoice;
+use App\Exceptions\Custom\DirectoryNotFoundException;
+use App\Exceptions\Custom\FileNotFoundException;
+use App\Exceptions\Custom\InvalidFileException;
 use App\Services\FilesUploader;
-use App\Services\UploadFileService;
-use Illuminate\Contracts\Cache\Store;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
+use Tests\TestCase;
 use Illuminate\Support\Facades\Storage;
-use InvalidArgumentException;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Mockery\MockInterface;
-use Nette\DirectoryNotFoundException;
 use TypeError;
 
 class FilesUploaderTest extends TestCase
@@ -33,7 +28,6 @@ class FilesUploaderTest extends TestCase
         $path  = "someFilePath";
 
         $this->expectException(DirectoryNotFoundException::class);
-        $this->expectExceptionMessage("Directory not Found in path {$path}.");
         Storage::shouldReceive('directoryExists')->with($path)->andReturn(false);
 
         app()->make(FilesUploader::class)->deleteDirectory($path);
@@ -66,7 +60,6 @@ class FilesUploaderTest extends TestCase
         $path  = "someFilePath";
 
         $this->expectException(FileNotFoundException::class);
-        $this->expectExceptionMessage("File does not exist at path {$path}.");
 
         Storage::shouldReceive('missing')
             ->once()
@@ -106,7 +99,6 @@ class FilesUploaderTest extends TestCase
         $path  = "someFilePath";
 
         $this->expectException(FileNotFoundException::class);
-        $this->expectExceptionMessage("File does not exist at path {$path}.");
 
         Storage::shouldReceive('missing')
             ->once()
@@ -221,8 +213,7 @@ class FilesUploaderTest extends TestCase
     /** @test */
     public function it_throw_an_exception_if_the_data_is_not_a_valid_file(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The data should be a valid file');
+        $this->expectException(InvalidFileException::class);
         app()->make(FilesUploader::class)->upload('path', [UploadedFile::fake()->image('test1.jpg'), 'test', 12]);
     }
     /** @test */

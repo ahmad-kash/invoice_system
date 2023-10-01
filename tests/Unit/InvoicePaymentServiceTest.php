@@ -3,12 +3,11 @@
 namespace Tests\Unit;
 
 use App\Enums\InvoiceState;
+use App\Exceptions\Custom\ArgumentOutOfRangeException;
 use App\Models\Invoice;
 use App\Services\Invoice\InvoicePaymentService;
 use App\Services\Notification\AdminNotifyService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Testing\Exceptions\InvalidArgumentException;
-use Nette\ArgumentOutOfRangeException;
 use tests\TestCase;
 
 class InvoicePaymentServiceTest extends TestCase
@@ -73,7 +72,7 @@ class InvoicePaymentServiceTest extends TestCase
     /** @test */
     public function it_throw_an_exception_if_the_amount_equal_to_zero(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(ArgumentOutOfRangeException::class);
 
         $this->invoicePaymentService->pay($this->invoice, 0);
     }
