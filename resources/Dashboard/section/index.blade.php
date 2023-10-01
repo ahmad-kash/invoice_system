@@ -11,13 +11,17 @@
 
     <x-table>
         <x-slot:tableTop>
-            <a class="btn btn-primary" href="{{ route('sections.create') }}">اضافة قسم</a>
+            @can('create section')
+                <a class="btn btn-primary" href="{{ route('sections.create') }}">اضافة قسم</a>
+            @endcan
         </x-slot:tableTop>
         <x-slot:tableHeader>
             <th style="width: 10px">#</th>
             <th>الاسم</th>
             <th>الوصف</th>
-            <th></th>
+            @canany(['edit section', 'delete section'])
+                <th>العمليات</th>
+            @endcan
         </x-slot:tableHeader>
         <x-slot:tableBody>
             @forelse ($sections as $section)
@@ -27,25 +31,25 @@
                     <td>
                         <div class="d-block text-truncate">{{ $section->description }}</div>
                     </td>
-                    <td>
-
-                        <div class="felx">
-                            @can('edit section')
-                                <a href="{{ route('sections.edit', ['section' => $section->id]) }}"
-                                    class="btn btn-secondary text-white">تعديل</a>
-                            @endcan
-                            @can('delete section')
-                                <button class="btn btn-danger text-white" data-name="{{ $section->name }}"
-                                    data-id="{{ $section->id }}">حذف</button>
-                                <form class="d-none" method="POST" action="{{ route('sections.destroy', $section->id) }}">
-                                    @csrf
-                                    @method('delete')
-                                    <button id="delete-{{ $section->id }}">delete</button>
-                                </form>
-                            @endcan
-
-                        </div>
-                    </td>
+                    @canany(['edit section', 'delete section'])
+                        <td>
+                            <div class="felx">
+                                @can('edit section')
+                                    <a href="{{ route('sections.edit', ['section' => $section->id]) }}"
+                                        class="btn btn-secondary text-white">تعديل</a>
+                                @endcan
+                                @can('delete section')
+                                    <button class="btn btn-danger text-white" data-name="{{ $section->name }}"
+                                        data-id="{{ $section->id }}">حذف</button>
+                                    <form class="d-none" method="POST" action="{{ route('sections.destroy', $section->id) }}">
+                                        @csrf
+                                        @method('delete')
+                                        <button id="delete-{{ $section->id }}">delete</button>
+                                    </form>
+                                @endcan
+                            </div>
+                        </td>
+                    @endcan
                 </tr>
             @empty
                 <p class="text-center py-2 font-weight-bold">

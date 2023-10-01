@@ -25,32 +25,34 @@
                 </form>
             </div>
         </li>
-        <!-- Notifications Dropdown Menu -->
-        <li class="nav-item dropdown">
-            @php
-                $unreadNotifications = auth()->user()->unreadNotifications;
-            @endphp
-            <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
-                <i class="fa fa-bell"></i>
-                <span class="badge badge-warning navbar-badge">{{ $unreadNotifications->count() }}</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right"
-                style="max-height:20rem;max-width:20rem;overflow-y:auto;overflow-x:hidden; ">
+        @role('admin')
+            <!-- Notifications Dropdown Menu -->
+            <li class="nav-item dropdown">
+                @php
+                    $unreadNotifications = auth()->user()->unreadNotifications;
+                @endphp
+                <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                    <i class="fa fa-bell"></i>
+                    <span class="badge badge-warning navbar-badge">{{ $unreadNotifications->count() }}</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right"
+                    style="max-height:20rem;max-width:20rem;overflow-y:auto;overflow-x:hidden; ">
 
-                <div class="dropdown-item dropdown-header d-flex justify-content-between align-items-center">
-                    <span class="mr-1">عدد الاشعارات
-                        {{ $unreadNotifications->count() }}</span>
-                    <form method="POST" action="{{ route('notifications.showAll') }}">
-                        @csrf
-                        <button class="btn btn-primary btn-sm">تحديد الكل كمقروء</button>
-                    </form>
+                    <div class="dropdown-item dropdown-header d-flex justify-content-between align-items-center">
+                        <span class="mr-1">عدد الاشعارات
+                            {{ $unreadNotifications->count() }}</span>
+                        <form method="POST" action="{{ route('notifications.showAll') }}">
+                            @csrf
+                            <button class="btn btn-primary btn-sm">تحديد الكل كمقروء</button>
+                        </form>
 
+                    </div>
+                    @foreach ($unreadNotifications as $notification)
+                        <div class="dropdown-divider"></div>
+                        <x-notification.notify :notification="$notification" />
+                    @endforeach
                 </div>
-                @foreach ($unreadNotifications as $notification)
-                    <div class="dropdown-divider"></div>
-                    <x-notification.notify :notification="$notification" />
-                @endforeach
-            </div>
-        </li>
+            </li>
+        @endrole
     </ul>
 </nav>

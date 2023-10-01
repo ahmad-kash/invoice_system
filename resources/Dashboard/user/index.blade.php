@@ -11,7 +11,9 @@
 
     <x-table>
         <x-slot:tableTop>
-            <a class="btn btn-primary" href="{{ route('users.create') }}">اضافة مستخدم</a>
+            @can('create user')
+                <a class="btn btn-primary" href="{{ route('users.create') }}">اضافة مستخدم</a>
+            @endcan
         </x-slot:tableTop>
         <x-slot:tableHeader>
             <th class="wd-10p border-bottom-0">#</th>
@@ -19,7 +21,9 @@
             <th class="wd-20p border-bottom-0">البريد الالكتروني</th>
             <th class="wd-15p border-bottom-0">حالة المستخدم</th>
             <th class="wd-15p border-bottom-0">نوع المستخدم</th>
-            <th class="wd-10p border-bottom-0">العمليات</th>
+            @canany(['edit user', 'delete user', 'force delete user', 'reset password'])
+                <th class="wd-10p border-bottom-0">العمليات</th>
+            @endcan
         </x-slot:tableHeader>
         <x-slot:tableBody>
             @foreach ($users as $key => $user)
@@ -37,60 +41,57 @@
                             @endforeach
                         @endif
                     </td>
+                    @canany(['edit user', 'delete user', 'force delete user', 'reset password'])
+                        <td>
+                            <div class="dropdown">
+                                <button aria-expanded="false" aria-haspopup="true"
+                                    class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
+                                    type="button">العمليات</button>
+                                <div class="dropdown-menu tx-13">
+                                    @can('edit user')
+                                        <a href="{{ route('users.edit', $user->id) }}" class="dropdown-item" title="تعديل"><i
+                                                class="fas fa-edit"></i> تعديل</a>
+                                    @endcan
 
-                    <td>
-                        <div class="dropdown">
-                            <button aria-expanded="false" aria-haspopup="true"
-                                class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
-                                type="button">العمليات</button>
-                            <div class="dropdown-menu tx-13">
-                                @can('edit user')
-                                    <a href="{{ route('users.edit', $user->id) }}" class="dropdown-item" title="تعديل"><i
-                                            class="fas fa-edit"></i> تعديل</a>
-                                @endcan
+                                    @can('delete user')
+                                        <a class="dropdown-item delete" data-effect="effect-scale" data-id="{{ $user->id }}"
+                                            data-name="{{ $user->name }}" data-toggle="modal" href="#" title="حذف"><i
+                                                class="text-warning fas fa-trash-alt"></i> حذف</a>
+                                        <form class="d-none" method="POST" action="{{ route('users.destroy', $user->id) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button id="delete-{{ $user->id }}">delete</button>
+                                        </form>
+                                    @endcan
+                                    @can('force delete user')
+                                        <a class="dropdown-item force-delete" data-effect="effect-scale"
+                                            data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-toggle="modal"
+                                            href="#" title="حذف نهائي"><i class="text-danger fas fa-trash-alt"></i> حذف
+                                            نهائي</a>
+                                        <form class="d-none" method="POST"
+                                            action="{{ route('users.forceDestroy', $user->id) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button id="force-delete-{{ $user->id }}">delete</button>
+                                        </form>
+                                    @endcan
+                                    @can('reset password')
+                                        <a class="dropdown-item reset" data-effect="effect-scale" data-id="{{ $user->id }}"
+                                            data-name="{{ $user->name }}" data-toggle="modal" href="#"
+                                            title="اعادة تعيين كلمة المرور"><i class="text-warning fas fa-key"></i> إعادة
+                                            تعيين كلمة المرور</a>
+                                        <form class="d-none" method="POST"
+                                            action="{{ route('password.reset.update', $user->id) }}">
+                                            @csrf
+                                            @method('put')
+                                            <button id="reset-{{ $user->id }}">reset</button>
+                                        </form>
+                                    @endcan
 
-                                @can('delete user')
-                                    <a class="dropdown-item delete" data-effect="effect-scale" data-id="{{ $user->id }}"
-                                        data-name="{{ $user->name }}" data-toggle="modal" href="#" title="حذف"><i
-                                            class="text-warning fas fa-trash-alt"></i> حذف</a>
-                                    <form class="d-none" method="POST" action="{{ route('users.destroy', $user->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                        <button id="delete-{{ $user->id }}">delete</button>
-                                    </form>
-                                @endcan
-                                @can('force delete user')
-                                    <a class="dropdown-item force-delete" data-effect="effect-scale"
-                                        data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-toggle="modal"
-                                        href="#" title="حذف نهائي"><i class="text-danger fas fa-trash-alt"></i> حذف
-                                        نهائي</a>
-                                    <form class="d-none" method="POST"
-                                        action="{{ route('users.forceDestroy', $user->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                        <button id="force-delete-{{ $user->id }}">delete</button>
-                                    </form>
-                                @endcan
-                                @can('reset password')
-                                    <a class="dropdown-item reset" data-effect="effect-scale" data-id="{{ $user->id }}"
-                                        data-name="{{ $user->name }}" data-toggle="modal" href="#"
-                                        title="اعادة تعيين كلمة المرور"><i class="text-warning fas fa-key"></i> إعادة
-                                        تعيين كلمة المرور</a>
-                                    <form class="d-none" method="POST"
-                                        action="{{ route('password.reset.update', $user->id) }}">
-                                        @csrf
-                                        @method('put')
-                                        <button id="reset-{{ $user->id }}">reset</button>
-                                    </form>
-                                @endcan
-
+                                </div>
                             </div>
-                        </div>
-
-                    </td>
-                    <td>
-
-                    </td>
+                        </td>
+                    @endcan
                 </tr>
             @endforeach
         </x-slot:tableBody>

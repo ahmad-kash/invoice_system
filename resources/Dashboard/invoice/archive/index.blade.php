@@ -29,7 +29,9 @@
             <th>الاجمالي</th>
             <th>الحالة</th>
             <th>ملاحظات</th>
-            <th>العمليات</th>
+            @canany(['restore invoice', 'force delete invoice'])
+                <th>العمليات</th>
+            @endcan
         </x-slot:tableHeader>
         <x-slot:tableBody>
             @forelse ($invoices as $invoice)
@@ -49,41 +51,42 @@
                     </td>
 
                     <td>{{ $invoice->note }}</td>
-                    <td>
-                        <div class="dropdown">
-                            <button aria-expanded="false" aria-haspopup="true"
-                                class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
-                                type="button">العمليات</button>
-                            <div class="dropdown-menu tx-13">
-                                @can('restore invoice')
-                                    <a class="dropdown-item restore" href="#" data-id="{{ $invoice->id }}"
-                                        data-number="{{ $invoice->number }}" data-toggle="modal"
-                                        data-target="#restore_invoice"><i class="text-info fas fa-trash-restore"></i>
-                                        استعادة</a>
-                                    <form class="d-none" method="POST"
-                                        action="{{ route('invoices.restore', ['invoice' => $invoice->id]) }}">
-                                        @csrf
-                                        @method('put')
-                                        <button id="restore-{{ $invoice->id }}">restore</button>
-                                    </form>
-                                @endcan
+                    @canany(['restore invoice', 'force delete invoice'])
+                        <td>
+                            <div class="dropdown">
+                                <button aria-expanded="false" aria-haspopup="true"
+                                    class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
+                                    type="button">العمليات</button>
+                                <div class="dropdown-menu tx-13">
+                                    @can('restore invoice')
+                                        <a class="dropdown-item restore" href="#" data-id="{{ $invoice->id }}"
+                                            data-number="{{ $invoice->number }}" data-toggle="modal"
+                                            data-target="#restore_invoice"><i class="text-warning fas fa-trash-restore"></i>
+                                            استعادة</a>
+                                        <form class="d-none" method="POST"
+                                            action="{{ route('invoices.restore', ['invoice' => $invoice->id]) }}">
+                                            @csrf
+                                            @method('put')
+                                            <button id="restore-{{ $invoice->id }}">restore</button>
+                                        </form>
+                                    @endcan
 
-                                @can('force delete invoice')
-                                    <a class="dropdown-item delete" href="#" data-id="{{ $invoice->id }}"
-                                        data-number="{{ $invoice->number }}" data-toggle="modal"
-                                        data-target="#delete_invoice"><i class="text-danger fas fa-trash-alt"></i> حذف
-                                        نهائي</a>
-                                    <form class="d-none" method="POST"
-                                        action="{{ route('invoices.forceDestroy', $invoice->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                        <button id="delete-{{ $invoice->id }}">delete</button>
-                                    </form>
-                                @endcan
+                                    @can('force delete invoice')
+                                        <a class="dropdown-item delete" href="#" data-id="{{ $invoice->id }}"
+                                            data-number="{{ $invoice->number }}" data-toggle="modal"
+                                            data-target="#delete_invoice"><i class="text-danger fas fa-trash-alt"></i> حذف
+                                            نهائي</a>
+                                        <form class="d-none" method="POST"
+                                            action="{{ route('invoices.forceDestroy', $invoice->id) }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button id="delete-{{ $invoice->id }}">delete</button>
+                                        </form>
+                                    @endcan
+                                </div>
                             </div>
-                        </div>
-
-                    </td>
+                        </td>
+                    @endcan
                 </tr>
             @empty
                 <p class="text-center py-2 font-weight-bold">
