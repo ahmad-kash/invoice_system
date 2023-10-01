@@ -43,7 +43,7 @@ class ProductController extends Controller
 
         $this->adminNotifyService->notifyAdmins(new ProductCreated($product, auth()->user()));
 
-        return redirect()->route('products.index');
+        return redirect()->route('products.index')->with('successMessage', 'تم اضافة المنتج بنجاح');
     }
 
     /**
@@ -72,7 +72,7 @@ class ProductController extends Controller
         $this->adminNotifyService->notifyAdmins(new ProductUpdated($product, auth()->user()));
 
 
-        return redirect()->route('products.index');
+        return redirect()->route('products.index')->with('successMessage', 'تم تعديل المنتج بنجاح');;
     }
 
     /**
@@ -84,8 +84,7 @@ class ProductController extends Controller
 
         $this->adminNotifyService->notifyAdmins(new ProductDeleted($product, auth()->user()));
 
-
-        return redirect()->route('products.index');
+        return redirect()->route('products.index')->with('successMessage', 'تم حذف المنتج بنجاح');;
     }
 
     public function getSectionProducts(Section $section)

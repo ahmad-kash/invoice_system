@@ -51,7 +51,7 @@ class InvoiceController extends Controller
             $request->validated('files')
         );
 
-        return redirect()->route('invoices.index');
+        return redirect()->route('invoices.index')->with('successMessage', 'تم اضافة الفاتورة بنجاح');
     }
 
     /**
@@ -81,13 +81,13 @@ class InvoiceController extends Controller
             $invoice
         );
 
-        return redirect()->route('invoices.index');
+        return redirect()->route('invoices.index')->with('successMessage', 'تم تعديل الفاتورة بنجاح');
     }
 
     public function destroy(Invoice $invoice)
     {
-        $this->invoiceService->delete($invoice);
-
-        return redirect()->route('invoices.index');
+        if ($this->invoiceService->delete($invoice))
+            return redirect()->route('invoices.index')->with('successMessage', 'تم ارشفة الفاتورة بنجاح');
+        return back()->with('errorMessage', 'حصل مشكلة لم يتم ارشفة الفاتورة');
     }
 }

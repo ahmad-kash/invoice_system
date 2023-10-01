@@ -42,7 +42,7 @@ class SectionController extends Controller
 
         $this->adminNotifyService->notifyAdmins(new SectionCreated($section, auth()->user()));
 
-        return redirect()->route('sections.index');
+        return redirect()->route('sections.index')->with('successMessage', 'تم اضافة القسم بنجاح');
     }
 
     /**
@@ -70,7 +70,7 @@ class SectionController extends Controller
 
         $this->adminNotifyService->notifyAdmins(new SectionUpdated($section, auth()->user()));
 
-        return redirect()->route('sections.index');
+        return redirect()->route('sections.index')->with('successMessage', 'تم تعديل القسم بنجاح');
     }
 
     /**
@@ -82,6 +82,6 @@ class SectionController extends Controller
 
         $this->adminNotifyService->notifyAdmins(new SectionDeleted($section, auth()->user()));
 
-        return redirect()->route('sections.index', status: 303);
+        return redirect()->route('sections.index', status: 303)->with('successMessage', 'تم حذف القسم بنجاح');
     }
 }

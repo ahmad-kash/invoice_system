@@ -28,14 +28,14 @@ class InvoiceArchiveController extends Controller
     {
         $this->invoiceService->restore($invoice);
 
-        return redirect()->back();
+        return redirect()->back()->with('successMessage', 'تم استرجاع الفاتورة');
     }
 
     public function destroy(Invoice $invoice)
     {
         $this->invoiceService->forceDelete($invoice);
 
-        return redirect()->back();
+        return redirect()->back()->with('successMessage', 'تم حذف الفاتورة نهائيا');
     }
 
     protected function resourceAbilityMap()

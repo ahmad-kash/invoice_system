@@ -60,7 +60,7 @@ class UserController extends Controller
             $request->validated('role')
         );
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('successMessage', 'تم اضافة المستخدم بنجاح');
     }
 
     /**
@@ -79,7 +79,7 @@ class UserController extends Controller
     {
         $this->userService->update($user, UserDTO::fromUpdateRequest($request->validated(), $user), $request->validated('role'));
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('successMessage', 'تم تعديل معلومات المستخدم بنجاح');
     }
 
     /**
@@ -89,6 +89,6 @@ class UserController extends Controller
     {
         $this->userService->delete($user);
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('successMessage', 'تم حذف المستخدم بنجاح');
     }
 }
