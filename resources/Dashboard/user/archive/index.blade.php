@@ -89,7 +89,6 @@
     </x-table>
 
     @push('bodyScripts')
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             const restoreElements = document.querySelectorAll('.restore');
             const forceDeleteElements = document.querySelectorAll('.force-delete');
