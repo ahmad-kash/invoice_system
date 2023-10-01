@@ -50,7 +50,7 @@
                         {{ $unPaidInvoicesSum }}
                     </x-slot:amount>
                     <x-slot:link>
-                        {{ route('invoices.index', ['state', 'unPaid']) }}
+                        {{ route('invoices.index', ['state'=> 'unPaid']) }}
                     </x-slot:link>
                 </x-box>
             </div>
