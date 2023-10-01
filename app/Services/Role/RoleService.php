@@ -25,6 +25,8 @@ class RoleService
     {
         if (isset($permissions))
             $role->syncPermissions($permissions);
+        else
+            $role->syncPermissions([]);
     }
 
     public function getAllRoleWithPaginate(): Paginator

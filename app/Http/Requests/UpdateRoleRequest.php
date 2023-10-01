@@ -16,7 +16,7 @@ class UpdateRoleRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', new ExistsOrUnique],
-            'permissions' => ['required', 'array'],
+            'permissions' => ['sometimes', 'array'],
             'permissions.*' => ['required', 'string', 'exists:permissions,name'],
         ];
     }
