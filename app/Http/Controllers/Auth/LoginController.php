@@ -16,7 +16,7 @@ class LoginController extends Controller
     public function store(LoginRequest $request)
     {
 
-        if (auth()->attempt($request->validated())) {
+        if (auth()->attempt($request->validated(), $request->input('remember'))) {
             $request->session()->regenerate();
 
             return redirect()->intended('/');
