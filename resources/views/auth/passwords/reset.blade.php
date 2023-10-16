@@ -3,11 +3,10 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Login') }}</div>
+                    <div class="card-header">أعادة تعين كلمة المرور</div>
 
                     <div class="card-body">
-                        <form method="POST"
-                            action="{{ URL::signedRoute('password.reset.store', ['email' => $email]) }}">
+                        <form method="POST" action="{{ URL::signedRoute('password.reset.store', ['email' => $email]) }}">
                             @csrf
 
                             <div class="row mb-3">
