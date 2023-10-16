@@ -30,7 +30,7 @@ class InvoicePaymentService
         if ($amount ==  0)
             throw new ArgumentOutOfRangeException("القيمة يجب ان تكون اكبر من 0");
 
-        if (!$this->amountsIsSmallerThanTotal($invoice, $amount))
+        if (!$this->amountsIsSmallerThanOrEqualToTotal($invoice, $amount))
             throw new ArgumentOutOfRangeException("القيمة المدفوعة سابقا + القيمة الحالية ={$this->allPayments}, يجب ان تكون اقل او تساوي القيمة الكلية للفاتورة {$invoice->total}");
 
         return $this->makeAPayment($invoice, $amount, $note);
@@ -39,7 +39,7 @@ class InvoicePaymentService
     public function getNewState(Invoice $invoice): InvoiceState
     {
         //the unPaid state can't be set cause there is a new payment and it will always be bigger then 0
-        if ($this->allPayments == $invoice->total)
+        if (round($this->allPayments, 2) == round($invoice->total, 2))
             return InvoiceState::paid;
 
         return InvoiceState::partiallyPaid;
@@ -74,9 +74,9 @@ class InvoicePaymentService
         else
             $this->adminNotifyService->notifyAdmins(new InvoicePaidPartially($invoice, auth()->user(), $amount));
     }
-    private function amountsIsSmallerThanTotal(Invoice $invoice): bool
+    private function amountsIsSmallerThanOrEqualToTotal(Invoice $invoice): bool
     {
-        return round($invoice->total, 2) > round($this->allPayments, 2);
+        return round($invoice->total, 2) >= round($this->allPayments, 2);
     }
 
     private function changeInvoiceState(Invoice $invoice): bool
