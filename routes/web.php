@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\ActivationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\RoleController;
@@ -41,39 +42,43 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('notactive', [ActivationController::class, 'index'])->name('isnotactive');
 
-    Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
+    Route::middleware('isActive')->group(function () {
+        Route::get('/', [HomeController::class, 'index'])->name('home');
 
-    Route::get('notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
-    Route::post('notifications', [NotificationController::class, 'showAll'])->name('notifications.showAll');
+        Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 
-    Route::resource('sections', SectionController::class);
-    Route::resource('products', ProductController::class);
-    Route::get('sections/{section}/products', [ProductController::class, 'getSectionProducts'])->name('sections.products');
+        Route::get('notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
+        Route::post('notifications', [NotificationController::class, 'showAll'])->name('notifications.showAll');
 
-    Route::get('invoices/restore', [InvoiceArchiveController::class, 'index'])->name('invoices.archive.index');
-    Route::put('invoices/restore/{invoice}', [InvoiceArchiveController::class, 'update'])->withTrashed()->name('invoices.restore');
-    Route::delete('invoices/forceDelete/{invoice}', [InvoiceArchiveController::class, 'destroy'])->withTrashed()->name('invoices.forceDestroy');
+        Route::resource('sections', SectionController::class);
+        Route::resource('products', ProductController::class);
+        Route::get('sections/{section}/products', [ProductController::class, 'getSectionProducts'])->name('sections.products');
 
-    Route::resource('invoices', InvoiceController::class);
+        Route::get('invoices/restore', [InvoiceArchiveController::class, 'index'])->name('invoices.archive.index');
+        Route::put('invoices/restore/{invoice}', [InvoiceArchiveController::class, 'update'])->withTrashed()->name('invoices.restore');
+        Route::delete('invoices/forceDelete/{invoice}', [InvoiceArchiveController::class, 'destroy'])->withTrashed()->name('invoices.forceDestroy');
 
-
-    Route::get('attachments/{attachment}', [InvoiceAttachmentController::class, 'show'])->name('invoices.attachments.show');
-    Route::get('attachments/{attachment}/download', [InvoiceAttachmentController::class, 'download'])->name('invoices.attachments.download');
-    Route::post('invoices/{invoice}/attachments', [InvoiceAttachmentController::class, 'store'])->name('invoices.attachments.store');
-    Route::delete('attachments/{attachment}', [InvoiceAttachmentController::class, 'destroy'])->name('invoices.attachments.destroy');
-
-    Route::get('invoices/{invoice}/payments', [InvoicePaymentController::class, 'create'])->name('invoices.payments.create');
-    Route::post('invoices/{invoice}/payments', [InvoicePaymentController::class, 'store'])->name('invoices.payments.store');
+        Route::resource('invoices', InvoiceController::class);
 
 
-    Route::get('users/restore', [UserArchiveController::class, 'index'])->name('users.archive.index');
-    Route::put('users/restore/{user}', [UserArchiveController::class, 'update'])->withTrashed()->name('users.restore');
-    Route::delete('users/forceDelete/{user}', [UserArchiveController::class, 'destroy'])->withTrashed()->name('users.forceDestroy');
+        Route::get('attachments/{attachment}', [InvoiceAttachmentController::class, 'show'])->name('invoices.attachments.show');
+        Route::get('attachments/{attachment}/download', [InvoiceAttachmentController::class, 'download'])->name('invoices.attachments.download');
+        Route::post('invoices/{invoice}/attachments', [InvoiceAttachmentController::class, 'store'])->name('invoices.attachments.store');
+        Route::delete('attachments/{attachment}', [InvoiceAttachmentController::class, 'destroy'])->name('invoices.attachments.destroy');
 
-    Route::resource('users', UserController::class);
-    Route::put('reset/{user}', [ResetPasswordController::class, 'update'])->name('password.reset.update');
+        Route::get('invoices/{invoice}/payments', [InvoicePaymentController::class, 'create'])->name('invoices.payments.create');
+        Route::post('invoices/{invoice}/payments', [InvoicePaymentController::class, 'store'])->name('invoices.payments.store');
 
-    Route::resource('roles', RoleController::class);
+
+        Route::get('users/restore', [UserArchiveController::class, 'index'])->name('users.archive.index');
+        Route::put('users/restore/{user}', [UserArchiveController::class, 'update'])->withTrashed()->name('users.restore');
+        Route::delete('users/forceDelete/{user}', [UserArchiveController::class, 'destroy'])->withTrashed()->name('users.forceDestroy');
+
+        Route::resource('users', UserController::class);
+        Route::put('reset/{user}', [ResetPasswordController::class, 'update'])->name('password.reset.update');
+
+        Route::resource('roles', RoleController::class);
+    });
 });

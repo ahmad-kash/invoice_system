@@ -28,7 +28,10 @@ class SectionPermissionTest extends TestCase
             'delete section',
             'edit section'
         ]);
-        $this->spyUser = $this->spy(User::class);
+
+        $this->spyUser = $this->spy(User::class, function (MockInterface $mock) {
+            $mock->shouldReceive('isActive')->andReturn(true);
+        });
 
         $this->signIn($this->spyUser);
     }

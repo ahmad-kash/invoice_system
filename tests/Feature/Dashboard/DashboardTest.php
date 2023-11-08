@@ -38,4 +38,19 @@ class DashboardTest extends TestCase
                 <i class="fa fa-bell"></i>
                 <span class="badge badge-warning navbar-badge">', false);
     }
+
+    /** @test */
+    public function un_active_user_must_see_user_is_not_active_page(): void
+    {
+        $user = User::factory()->create(['is_active' => false] + ['email' => 'test@test.com', 'password' => bcrypt('123456789')]);
+        $this->signIn($user);
+
+        $this->get(route('home'))
+            ->assertRedirectToRoute('isnotactive');
+
+        $this->followingRedirects();
+
+        $this->get(route('home'))
+            ->assertSee('المستخدم غير مفعل يرجى مراجعة احد المشرفين');
+    }
 }

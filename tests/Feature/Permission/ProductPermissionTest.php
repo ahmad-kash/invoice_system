@@ -27,7 +27,10 @@ class ProductPermissionTest extends TestCase
             'delete product',
             'edit product'
         ]);
-        $this->spyUser = $this->spy(User::class);
+
+        $this->spyUser = $this->spy(User::class, function (MockInterface $mock) {
+            $mock->shouldReceive('isActive')->andReturn(true);
+        });
 
         $this->signIn($this->spyUser);
     }

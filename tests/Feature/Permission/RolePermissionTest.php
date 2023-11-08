@@ -5,6 +5,7 @@ namespace Tests\Feature\Permission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Mockery\MockInterface;
 use Spatie\Permission\Models\Role;
 use Tests\PermissionRoleTestFactory;
 use Tests\TestCase;
@@ -25,7 +26,10 @@ class RolePermissionTest extends TestCase
             'delete role',
             'edit role'
         ]);
-        $this->spyUser = $this->spy(User::class);
+
+        $this->spyUser = $this->spy(User::class, function (MockInterface $mock) {
+            $mock->shouldReceive('isActive')->andReturn(true);
+        });
 
         $this->signIn($this->spyUser);
     }

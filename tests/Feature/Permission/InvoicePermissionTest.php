@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Mockery\MockInterface;
 use Tests\PermissionRoleTestFactory;
 use Tests\TestCase;
 
@@ -30,7 +31,9 @@ class InvoicePermissionTest extends TestCase
                 ]
             );
 
-        $this->spyUser = $this->spy(User::class);
+        $this->spyUser = $this->spy(User::class, function (MockInterface $mock) {
+            $mock->shouldReceive('isActive')->andReturn(true);
+        });
 
         $this->signIn($this->spyUser);
     }
@@ -38,6 +41,7 @@ class InvoicePermissionTest extends TestCase
     /** @test */
     public function user_is_asked_if_he_has_show_invoice_permission_on_route_invoices_index(): void
     {
+        // $this->withoutExceptionHandling();
         $this->get(route('invoices.index'));
 
         $this->spyUser->shouldHaveReceived('hasPermissionTo')->with('show invoice')->once();

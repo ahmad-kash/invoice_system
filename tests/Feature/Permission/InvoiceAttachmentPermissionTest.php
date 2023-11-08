@@ -6,6 +6,7 @@ use App\Models\InvoiceAttachment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Mockery\MockInterface;
 use Tests\PermissionRoleTestFactory;
 use Tests\TestCase;
 
@@ -27,7 +28,9 @@ class InvoiceAttachmentPermissionTest extends TestCase
                 ]
             );
 
-        $this->spyUser = $this->spy(User::class);
+        $this->spyUser = $this->spy(User::class, function (MockInterface $mock) {
+            $mock->shouldReceive('isActive')->andReturn(true);
+        });
 
         $this->signIn($this->spyUser);
     }

@@ -21,7 +21,7 @@ readonly class UserDTO implements DTOInterface
         return new self(
             name: $userData['name'] ?? $user->name,
             email: $userData['email'] ?? $user->email,
-            is_active: $userData['is_active'] ?? $user->is_active,
+            is_active: $userData['is_active'] ?? false,
             password: null,
         );
     }

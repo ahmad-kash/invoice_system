@@ -44,4 +44,9 @@ class User extends Authenticatable
     {
         return $this->roles->isNotEmpty() ? $this->roles[0]->name : null;
     }
+
+    public function isActive()
+    {
+        return $this->is_active;
+    }
 }

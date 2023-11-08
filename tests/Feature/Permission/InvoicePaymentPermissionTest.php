@@ -33,6 +33,7 @@ class InvoicePaymentPermissionTest extends TestCase
         $user = $this->partialMock(User::class, function (MockInterface $mock) {
             $mock->shouldReceive('hasPermissionTo')->with('create invoice')->once()->andReturn('true');
             $mock->shouldReceive('hasPermissionTo')->with('edit invoice')->once()->andReturn('true');
+            $mock->shouldReceive('isActive')->andReturn(true);
         });
         $this->signIn($user);
 
